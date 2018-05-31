@@ -144,21 +144,20 @@ export default class Bot {
       this.send({ type: 'SentClientHello', port: this.selfServerPort });
     }, 30000);
 
-    // start the server
-    while (true) {
-      try {
+    this.server.on('error', (err: any) => {
+      if (err.errno === 'EADDRINUSE') {
+        this.logger.warn(
+          `The port ${this.selfServerPort} was busy. Use ${this.selfServerPort +
+            1} instead.`,
+        );
+        this.selfServerPort++;
         this.server.bind(this.selfServerPort);
-      } catch (err) {
-        if (err.errno === 'EADDRINUSE') {
-          this.logger.warn(
-            `The port ${this.selfServerPort} was busy. Use ${this
-              .selfServerPort + 1} instead.`,
-          );
-          this.selfServerPort++;
-          continue;
-        }
+      } else {
+        this.logger.error(err.message);
       }
-      break;
-    }
+    });
+
+    // start the server
+    this.server.bind(this.selfServerPort);
   }
 }
