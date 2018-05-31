@@ -146,6 +146,18 @@ export default class Bot {
     }, 30000);
 
     // start the server
-    this.server.bind(this.selfServerPort);
+    while (true) {
+      try {
+        this.server.bind(this.selfServerPort);
+      } catch (err) {
+        if ('EADDRINUSE' in err.message) {
+          this.logger.warn(
+            `The port ${this.selfServerPort} was busy. Use ${this
+              .selfServerPort + 1} instead.`,
+          );
+          this.selfServerPort++;
+        }
+      }
+    }
   }
 }
