@@ -152,6 +152,7 @@ export default class Bot {
         );
         this.selfServerPort++;
         this.server.close();
+        this.server = createSocket('udp4');
         this.server.bind(this.selfServerPort);
         this.start();
       } else {
