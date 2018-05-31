@@ -66,7 +66,6 @@ export default class Bot {
         if (err) {
           this.logger.error(err.message);
         }
-        this.client.close();
       },
     );
   }
@@ -156,8 +155,10 @@ export default class Bot {
               .selfServerPort + 1} instead.`,
           );
           this.selfServerPort++;
+          continue;
         }
       }
+      break;
     }
   }
 }
