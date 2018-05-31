@@ -150,7 +150,7 @@ export default class Bot {
       try {
         this.server.bind(this.selfServerPort);
       } catch (err) {
-        if ('EADDRINUSE' in err.message) {
+        if (err.errno === 'EADDRINUSE') {
           this.logger.warn(
             `The port ${this.selfServerPort} was busy. Use ${this
               .selfServerPort + 1} instead.`,
