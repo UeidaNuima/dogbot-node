@@ -146,15 +146,8 @@ export default class Bot {
 
     this.server.on('error', (err: any) => {
       if (err.errno === 'EADDRINUSE') {
-        this.logger.warn(
-          `The port ${this.selfServerPort} was busy. Use ${this.selfServerPort +
-            1} instead.`,
-        );
-        this.selfServerPort++;
+        this.logger.error(`The port ${this.selfServerPort} was busy.`);
         this.server.close();
-        this.server = createSocket('udp4');
-        this.server.bind(this.selfServerPort);
-        this.start();
       } else {
         this.logger.error(err.message);
       }
