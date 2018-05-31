@@ -151,7 +151,9 @@ export default class Bot {
             1} instead.`,
         );
         this.selfServerPort++;
+        this.server.close();
         this.server.bind(this.selfServerPort);
+        this.start();
       } else {
         this.logger.error(err.message);
       }
