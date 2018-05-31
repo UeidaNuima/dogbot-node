@@ -1,0 +1,27 @@
+{
+  "name": "dogbot-node",
+  "version": "0.1.0",
+  "description": "A bot for aigis.",
+  "main": "index.js",
+  "author": "MoonDropX",
+  "license": "WTFPL",
+  "scripts": {
+    "start": "ts-node src",
+    "build": "tsc",
+    "prod": "node dist"
+  },
+  "devDependencies": {
+    "@types/koa-compose": "^3.2.2",
+    "@types/node": "^10.1.4",
+    "prettier": "^1.13.2",
+    "ts-node": "^6.0.5",
+    "tslint": "^5.10.0",
+    "tslint-config-prettier": "^1.13.0",
+    "typescript": "^2.8.3"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "iconv-lite": "^0.4.23",
+    "koa-compose": "^4.1.0"
+  }
+}
