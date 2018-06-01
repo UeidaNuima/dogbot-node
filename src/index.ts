@@ -1,4 +1,4 @@
-import { default as Bot, RecvPrivateMessage } from '../../dog';
+import { default as Bot, RecvPrivateMessage } from '../../dogq';
 
 const bot = new Bot();
 
