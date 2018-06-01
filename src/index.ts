@@ -1,13 +1,12 @@
-import Bot from './chiq';
-import { Level } from './chiq/logger';
-// import * as cq from './chiq/cqsdk';
+import { default as Bot, RecvPrivateMessage } from '../../chiq';
 
-const bot = new Bot({ logLevel: Level.ALL });
+const bot = new Bot();
 
-// debug logger
-// bot.use(async (ctx, next) => {
-//   ctx.bot.logger.debug(`↘ ${ctx.message.message}`);
-//   await next();
-// });
+// a simple repeat bot
+bot.on({ type: 'RecvPrivateMessage' }, async (ctx) => {
+  const message = ctx.message as RecvPrivateMessage;
+  ctx.bot.logger.info(`↘ ${message.text}`);
+  ctx.reply(message.text);
+});
 
 bot.start();
