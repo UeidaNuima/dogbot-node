@@ -1,19 +1,18 @@
 import { default as Bot } from 'dogq';
 import Bark from './middleware/bark';
 import Exp from './middleware/exp';
-import * as mongoose from 'mongoose';
+import { db } from './model';
+import { createScheduleJobs } from './schedule';
 
+const bot = new Bot({ selfServerPort: 12455, debug: true });
 
-const bot = new Bot({ selfServerPort: 12455 });
-
-mongoose.connect('mongodb://localhost/aigis');
-mongoose.connection.on('error', () => {
+db.on('error', () => {
   bot.logger.error('Connect to mongodb error!');
   process.exit(1);
-})
+});
+bot.context.db = db;
 
-// register models to default connection
-import './model';
+createScheduleJobs(bot);
 
 /// Bark! Bark!
 bot.use(Bark);
