@@ -1,6 +1,8 @@
 import { default as Bot } from 'dogq';
 import Bark from './middleware/bark';
 import Exp from './middleware/exp';
+import Twitter from './middleware/twitter';
+import Calc from './middleware/calc';
 import { db } from './model';
 import { createScheduleJobs } from './schedule';
 
@@ -18,6 +20,13 @@ createScheduleJobs(bot);
 bot.use(Bark);
 
 // count exp and buckets
-bot.use(Exp);
+bot.on({ text: /^(?:\/桶 |\/bucket)(.*)$/ }, Exp);
 
+// search for recent twitter
+bot.on({ text: /^(?:\/推特 |\/twitter)(.*)$/ }, Twitter);
+
+// calculate the exlpression
+bot.on({ text: /^(?:\/calc)(.*)$/ }, Calc);
+
+// run!
 bot.start();

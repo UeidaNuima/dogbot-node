@@ -1,12 +1,11 @@
-import { Context, RecvReplyableMessage } from 'dogq';
+import { Context } from 'dogq';
 import { Exp } from '../model';
 import { split } from '../util';
-
 
 const RARITY = '铜铁银金白黑蓝';
 // ikusei fairy fix
 const IKUSEI_FIX = 1.1;
-// per exp of a platinum bucket 
+// per exp of a platinum bucket
 const BUCKET_EXP = 8000;
 // per exp of a small bless fairy
 const BLESS_EXP = {
@@ -14,32 +13,38 @@ const BLESS_EXP = {
   3: 18000,
   4: 19000,
   5: 20000,
-  6: 19000
-}
+  6: 19000,
+};
 
 /**
  * Sum up the exp from srartLv to endLv with the given rarity.
- * @param rarity 
- * @param startLv 
- * @param endLv 
+ * @param rarity
+ * @param startLv
+ * @param endLv
  */
 async function sumUpExp(rarity: number, startLv: number, endLv: number) {
   const exp = await Exp.aggregate([
     { $match: { $and: [{ rarity }, { lv: { $gte: startLv, $lt: endLv } }] } },
-    { $group: { _id: null, sumExp: { $sum: '$exp' } } }
+    { $group: { _id: null, sumExp: { $sum: '$exp' } } },
   ]);
   return exp[0].sumExp as number;
 }
 
 /**
  * Calculate what level can be fullfilled once by given buckets and bless fairies
- * @param rarity 
- * @param endLv 
+ * @param rarity
+ * @param endLv
  * @param bucket number of platinum bucket
  * @param bless  number of small bless fairy
  * @param ikusei whether use ikusei fairy
  */
-export async function countStart(rarity: number, endLv: number, bucket = 0, bless = 0, ikusei = false) {
+export async function countStart(
+  rarity: number,
+  endLv: number,
+  bucket = 0,
+  bless = 0,
+  ikusei = false,
+) {
   if (endLv >= 100) {
     throw Error('兄啊比99级还大了是什么鬼');
   }
@@ -68,8 +73,8 @@ export async function countStart(rarity: number, endLv: number, bucket = 0, bles
       if (currentLvSumExp) {
         return {
           lv: currentLv,
-          remainExp: currentLvSumExp.exp - (exp - sumExp)
-        }
+          remainExp: currentLvSumExp.exp - (exp - sumExp),
+        };
       }
     }
   }
@@ -78,12 +83,17 @@ export async function countStart(rarity: number, endLv: number, bucket = 0, bles
 
 /**
  * Count platinum buckets and give suggestion for best time to have platinum buckets.
- * @param rarity 
- * @param startLv 
- * @param endLv 
+ * @param rarity
+ * @param startLv
+ * @param endLv
  * @param ikusei whether use ikusei fairy
  */
-export async function countBucket(rarity: number, startLv: number, endLv: number, ikusei = false) {
+export async function countBucket(
+  rarity: number,
+  startLv: number,
+  endLv: number,
+  ikusei = false,
+) {
   if (startLv >= endLv) {
     throw Error('兄啊等级反了');
   }
@@ -96,22 +106,31 @@ export async function countBucket(rarity: number, startLv: number, endLv: number
   // float bucket
   const bucket = exp / perBucketExp;
   return {
-    suggestion: Math.floor(bucket) === 0 ? undefined : await countStart(rarity, endLv, Math.floor(bucket), undefined, ikusei),
-    bucket
-  }
+    suggestion:
+      Math.floor(bucket) === 0
+        ? undefined
+        : await countStart(
+            rarity,
+            endLv,
+            Math.floor(bucket),
+            undefined,
+            ikusei,
+          ),
+    bucket,
+  };
 }
 
 export default async (ctx: Context) => {
-  const message = ctx.message as RecvReplyableMessage;
+  // const message = ctx.message as RecvReplyableMessage;
   let rarity: number;
   let startLv: number | undefined;
   const factor = {
     bucket: 0,
-    bless: 0
+    bless: 0,
   };
   let endLv: number;
 
-  const [r, m, e] = split(message.text);
+  const [r, m, e] = split(ctx.match[1]);
   if (!(r && m && e)) {
     ctx.reply('兄啊格式不对');
     return;
@@ -155,22 +174,37 @@ export default async (ctx: Context) => {
   if (startLv !== undefined) {
     async function genMsg(rr: number, slv: number, elv: number, i: boolean) {
       const res = await countBucket(rr, slv, elv, i);
-      let replyMsg = `[${i ? BUCKET_EXP : BUCKET_EXP * IKUSEI_FIX}]${res.bucket.toFixed(2)}个`;
+      let replyMsg = `[${
+        i ? BUCKET_EXP : BUCKET_EXP * IKUSEI_FIX
+      }]${res.bucket.toFixed(2)}个`;
       if (res.suggestion) {
-        replyMsg += `, ${res.suggestion.lv}到下一级${res.suggestion.remainExp}经验${Math.floor(res.bucket)}个`;
+        replyMsg += `, ${res.suggestion.lv}到下一级${
+          res.suggestion.remainExp
+        }经验${Math.floor(res.bucket)}个`;
       }
       return replyMsg;
     }
-    const replyMsgAll = (await Promise.all([genMsg(rarity, startLv, endLv, true), genMsg(rarity, startLv, endLv, false)])).join('\n');
+    const replyMsgAll = (await Promise.all([
+      genMsg(rarity, startLv, endLv, true),
+      genMsg(rarity, startLv, endLv, false),
+    ])).join('\n');
     ctx.reply(replyMsgAll);
     return;
   } else {
-    async function genMsg(rr: number, elv: number, f: { bucket: number, bless: number }, i: boolean) {
+    async function genMsg(
+      rr: number,
+      elv: number,
+      f: { bucket: number; bless: number },
+      i: boolean,
+    ) {
       const res = await countStart(rr, elv, f.bucket, f.bless, i);
       return `[${BUCKET_EXP}]${res.remainExp}到下一级${res.remainExp}经验`;
     }
-    const replyMsgAll = (await Promise.all([genMsg(rarity, endLv, factor, true), genMsg(rarity, endLv, factor, false)])).join('\n');
+    const replyMsgAll = (await Promise.all([
+      genMsg(rarity, endLv, factor, true),
+      genMsg(rarity, endLv, factor, false),
+    ])).join('\n');
     ctx.reply(replyMsgAll);
     return;
   }
-}
+};
