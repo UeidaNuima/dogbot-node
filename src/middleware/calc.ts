@@ -10,7 +10,7 @@ export default async function calc(ctx: Context) {
     try {
       ctx.reply(eval(match[0].replace(/\^/, '**')));
     } catch {
-      ctx.reply('菅　野　美　穂');
+      ctx.reply('解　読　不　能');
     }
   }
 }

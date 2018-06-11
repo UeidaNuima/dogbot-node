@@ -8,6 +8,7 @@
     "ordered-imports": false,
     "interface-name": [true, "never-prefix"],
     "object-literal-sort-keys": false,
-    "no-eval": false
+    "no-eval": false,
+    "no-conditional-assignment": false
   }
 }

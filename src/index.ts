@@ -20,10 +20,10 @@ createScheduleJobs(bot);
 bot.use(Bark);
 
 // count exp and buckets
-bot.on({ text: /^(?:\/桶 |\/bucket)(.*)$/ }, Exp);
+bot.on({ text: /^(?:桶 |\/bucket)(.*)$/ }, Exp);
 
 // search for recent twitter
-bot.on({ text: /^(?:\/推特 |\/twitter)(.*)$/ }, Twitter);
+bot.on({ text: /^(?:推特 |\/twitter)(.*)$/ }, Twitter);
 
 // calculate the exlpression
 bot.on({ text: /^(?:\/calc)(.*)$/ }, Calc);
