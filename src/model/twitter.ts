@@ -1,4 +1,10 @@
-import { Typegoose, prop, instanceMethod, InstanceType } from 'typegoose';
+import {
+  Typegoose,
+  prop,
+  instanceMethod,
+  InstanceType,
+  arrayProp,
+} from 'typegoose';
 import { CQImage } from 'dogq';
 import { downloadImage } from '../util';
 
@@ -6,7 +12,8 @@ export default class Twitter extends Typegoose {
   @prop() public id: number;
   @prop() public text: string;
   @prop() public time: Date;
-  @prop() public media: string[];
+  @arrayProp({ items: String })
+  public media: string[];
   @prop()
   public user: {
     id: number;

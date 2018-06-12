@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
 beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost/aigis');
+  await mongoose.connect('mongodb://localhost/aigisTest');
 });
 
 afterAll(async () => {

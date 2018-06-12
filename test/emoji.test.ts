@@ -18,7 +18,7 @@ ctx.reply = function(msg) {
 };
 
 it('should add a emoji', async () => {
-  // expect.assertions(1);
+  expect.assertions(1);
   ctx.message = {
     type: 'RecvGroupMessage',
     QQ: '1',
@@ -60,10 +60,10 @@ it('should reply a emoji', async () => {
 
 it('should remove a emoji', async () => {
   expect.assertions(2);
-  ctx.match = ['', 'del test 1'];
+  ctx.match = ['', 'del test 2'];
   await Emoji(ctx);
-  expect(ctx.msg).toEqual('从test里删掉了第1个表情');
-  ctx.match = ['', 'del test 1'];
+  expect(ctx.msg).toEqual('从test里删掉了第2个表情');
+  ctx.match = ['', 'del test 2'];
   await Emoji(ctx);
   expect(ctx.msg).toEqual('没…没找到???');
   ctx.msg = '';
