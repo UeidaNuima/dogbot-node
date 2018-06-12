@@ -26,8 +26,9 @@ export async function downloadImage(
   url: string,
   path?: string,
   checkExist = true,
+  filename?: string,
 ) {
-  const filename: string = url.split('/').pop() || 'dummy';
+  filename = filename || url.split('/').pop() || 'dummy';
   const filenameWithPath = path ? join(path, filename) : filename;
   const realPath = join(CQImageRoot, filenameWithPath);
 
@@ -41,6 +42,7 @@ export async function downloadImage(
     const img = await request.get({
       url,
       proxy: process.env.proxy ? process.env.proxy : undefined,
+      encoding: null,
     });
     await fs.writeFile(realPath, img);
   }
@@ -50,8 +52,9 @@ export async function downloadImage(
 
 export async function getCQImage(filename: string) {
   const path = join(CQImageRoot, filename + '.cqimg');
-  const url = ini.parse(path);
-  return await downloadImage(url, 'emoji');
+  const CQImgFile = await fs.readFile(path, 'utf-8');
+  const url = ini.parse(CQImgFile).image.url;
+  return await downloadImage(url, 'emoji', true, filename);
 }
 
 export function replaceAsync(
@@ -76,6 +79,7 @@ export function replaceAsync(
       );
       i = re.lastIndex;
       if (!re.global) {
+        i = m[0].length;
         break;
       } // for non-global regexes only take the first match
       if (m[0].length === 0) {

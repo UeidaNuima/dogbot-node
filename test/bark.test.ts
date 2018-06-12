@@ -6,15 +6,15 @@ const ctx = new Context(bot, {
   type: 'RecvPrivateMessage',
   QQ: '1',
   text: 'sb',
-  message: ''
+  message: '',
 });
-ctx.reply = function (msg) {
+ctx.reply = function(msg) {
   this.msg = msg;
-}
+};
 
 it('should reply 汪!', () => {
   expect.assertions(1);
-  return bark(ctx, () => Promise.resolve()).then((() => {
+  return bark(ctx, () => Promise.resolve()).then(() => {
     expect(ctx.msg).toEqual('汪!');
-  }));
+  });
 });

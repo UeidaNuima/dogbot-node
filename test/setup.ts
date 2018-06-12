@@ -1,9 +1,10 @@
 import * as mongoose from 'mongoose';
 
-beforeAll(() => {
-  mongoose.connect('mongodb://localhost/aigis');
+beforeAll(async () => {
+  await mongoose.connect('mongodb://localhost/aigis');
 });
 
-afterAll(() => {
-  mongoose.connection.close();
+afterAll(async () => {
+  await mongoose.connection.db.dropDatabase();
+  await mongoose.disconnect();
 });

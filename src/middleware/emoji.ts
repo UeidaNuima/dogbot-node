@@ -1,30 +1,46 @@
 import { Context, CQImage, RecvReplyableMessage } from 'dogq';
-import { join } from 'path';
 import { split, getCQImage, replaceAsync, choose } from '../util';
 import { Emoji } from '../model';
 
 export async function replacer(ctx: Context, next: any) {
   const message = ctx.message as RecvReplyableMessage;
   let isReplaced = false;
-  const replaced = await replaceAsync(
+  async function replaceCallback(...args: any[]) {
+    let name: string;
+    const origin: string = args[args.length - 1];
+    if (args.length === 3) {
+      name = args[0];
+    } else {
+      name = args[1];
+    }
+    let emoji;
+    if (message.type === 'RecvGroupMessage') {
+      emoji = await Emoji.findOne({ name, group: message.group });
+    } else {
+      emoji = await Emoji.findOne({ name });
+    }
+
+    if (emoji) {
+      isReplaced = true;
+      return new CQImage(`emoji/${choose(emoji.emoji)}`).toString();
+    } else {
+      return origin;
+    }
+  }
+
+  // bucket replace
+  let replaced = await replaceAsync(
     message.text,
     /[(（](.*?)[）)]/g,
-    async (_, name, __, origin) => {
-      let emoji;
-      if (message.type === 'RecvGroupMessage') {
-        emoji = await Emoji.findOne({ name, group: message.group });
-      } else {
-        emoji = await Emoji.findOne({ name });
-      }
-
-      if (emoji) {
-        isReplaced = true;
-        return choose(emoji.emoji);
-      } else {
-        return origin;
-      }
-    },
+    replaceCallback,
   );
+
+  // full text replace
+  if (!isReplaced) {
+    replaced = await replaceAsync(message.text, /^.*$/, replaceCallback);
+  }
+
+  // response if replaced otherwise just go through
   if (isReplaced) {
     ctx.reply(replaced);
   } else {
@@ -63,7 +79,8 @@ export default async (ctx: Context) => {
         return;
       }
     }
-    const image = CQImage.PATTERN.exec('emojiStr');
+
+    const image = CQImage.PATTERN.exec(emojiStr);
     if (!image) {
       ctx.reply('图呢？没JB你说个图啊');
       return;
@@ -75,7 +92,7 @@ export default async (ctx: Context) => {
     if (targetEmoji.emoji.length <= 10) {
       ctx.reply(
         `现在[${targetEmoji.name.join()}]含有以下的表情：${targetEmoji.emoji
-          .map(emoji => new CQImage(join('emoji', emoji)).toString())
+          .map(emoji => new CQImage(`emoji/${emoji}`).toString())
           .join('')}`,
       );
     } else {
