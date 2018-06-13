@@ -80,9 +80,9 @@ export default class Twitter extends Typegoose {
     );
 
     // return the whole string
-    return `${
+    return `====${
       this.user.name
-    }\n${this.time.toLocaleString()}\n${text}\n${images
+    }====\n${this.time.toLocaleString()}\n${text}\n${images
       .map(image => new CQImage(image).toString())
       .join('')}`;
   }

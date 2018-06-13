@@ -23,9 +23,7 @@ export default async function twitter(ctx: Context) {
     time: { $gte: deltaDays(-daysBefore - 1), $lt: deltaDays(-daysBefore) },
   });
   if (twitters.length !== 0) {
-    ctx.reply(
-      (await Promise.all(twitters.map(t => t.toString()))).join('===='),
-    );
+    ctx.reply((await Promise.all(twitters.map(t => t.toString()))).join('\n'));
   } else {
     ctx.reply('安娜啥都没说');
   }
