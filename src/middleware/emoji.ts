@@ -64,6 +64,11 @@ export default async (ctx: Context) => {
     let targetEmoji = await Emoji.findOne({ name });
     if (!targetEmoji) {
       // create new emoji instance
+      if (ctx.message.type === 'RecvPrivateMessage') {
+        ctx.reply('不能在私人聊天中新增表情…');
+        return;
+      }
+
       targetEmoji = new Emoji({ name: [name] });
       if (ctx.message.type === 'RecvGroupMessage') {
         targetEmoji.group.push(ctx.message.group);
