@@ -176,7 +176,7 @@ export default async (ctx: Context) => {
       try {
         const res = await countBucket(rr, slv, elv, i);
         let replyMsg = `[${
-          i ? BUCKET_EXP : BUCKET_EXP * IKUSEI_FIX
+          i ? BUCKET_EXP * IKUSEI_FIX : BUCKET_EXP
         }]${res.bucket.toFixed(2)}个`;
         if (res.suggestion) {
           replyMsg += `, ${res.suggestion.lv}到下一级${
@@ -201,8 +201,14 @@ export default async (ctx: Context) => {
       f: { bucket: number; bless: number },
       i: boolean,
     ) {
-      const res = await countStart(rr, elv, f.bucket, f.bless, i);
-      return `[${BUCKET_EXP}]${res.remainExp}到下一级${res.remainExp}经验`;
+      try {
+        const res = await countStart(rr, elv, f.bucket, f.bless, i);
+        return `[${i ? BUCKET_EXP * IKUSEI_FIX : BUCKET_EXP}]${
+          res.remainExp
+        }到下一级${res.remainExp}经验`;
+      } catch (err) {
+        return err.message;
+      }
     }
     const replyMsgAll = (await Promise.all([
       genMsg(rarity, endLv, factor, true),
