@@ -18,7 +18,7 @@ ctx.reply = function(msg) {
 };
 
 it('should add a emoji', async () => {
-  expect.assertions(1);
+  expect.assertions(2);
   ctx.message = {
     type: 'RecvGroupMessage',
     QQ: '1',
@@ -31,6 +31,11 @@ it('should add a emoji', async () => {
   await Emoji(ctx);
   expect(ctx.msg).toEqual(
     '现在[test]含有以下的表情：[CQ:image,file=emoji/test.png][CQ:image,file=emoji/test.png]',
+  );
+  ctx.match = ['', 'add test2 [CQ:image,file=test.png]'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual(
+    '现在[test2]含有以下的表情：[CQ:image,file=emoji/test.png]',
   );
   ctx.msg = '';
 });
@@ -125,6 +130,26 @@ it('should remove a name', async () => {
   ctx.match = ['', 'name del test test'];
   await Emoji(ctx);
   expect(ctx.msg).toEqual('无法删除组中的最后一个名称…');
+  ctx.msg = '';
+});
+
+it('should list emojis', async () => {
+  expect.assertions(2);
+  ctx.message = {
+    type: 'RecvGroupMessage',
+    QQ: '',
+    group: '2',
+    text: '',
+    message: '',
+  };
+  ctx.match = ['', 'list'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('test|test2');
+  ctx.match = ['', 'list test'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual(
+    '[test]含有以下的表情：[1]>[CQ:image,file=emoji/test.png][2]>[CQ:image,file=emoji/test.png]\n该表情所在的群组为2',
+  );
   ctx.msg = '';
 });
 

@@ -230,6 +230,47 @@ export default async (ctx: Context) => {
       ctx.reply(`从[${targetEmoji.name.join()}]表情组删除了群组${src}`);
       return;
     }
+  } else if (mainCommand === 'list') {
+    const [name] = argv;
+    if (name) {
+      const targetEmoji = await Emoji.findOne({ name });
+      if (targetEmoji) {
+        if (targetEmoji.emoji.length <= 10) {
+          ctx.reply(
+            `[${targetEmoji.name.join()}]含有以下的表情：${targetEmoji.emoji
+              .map(
+                (emoji, index) =>
+                  `[${index + 1}]>` + new CQImage(`emoji/${emoji}`).toString(),
+              )
+              .join('')}\n该表情所在的群组为${targetEmoji.group.join(',')}`,
+          );
+          return;
+        } else {
+          ctx.reply(
+            `现在[${targetEmoji.name.join()}]含有${
+              targetEmoji.emoji.length
+            }个表情`,
+          );
+          return;
+        }
+      } else {
+        ctx.reply('没找到这个名称的表情组…');
+        return;
+      }
+    } else {
+      let targetEmojis;
+      if (ctx.message.type === 'RecvGroupMessage') {
+        targetEmojis = await Emoji.find({ group: ctx.message.group });
+      } else {
+        targetEmojis = await Emoji.find();
+      }
+      if (targetEmojis.length !== 0) {
+        ctx.reply(targetEmojis.map(emoji => emoji.name.join(',')).join('|'));
+      } else {
+        ctx.reply('该群组下还没有表情，可以使用/emoji add <名称> <图片>添加');
+      }
+      return;
+    }
   }
   ctx.reply('兄啊没有这个指令');
   return;
