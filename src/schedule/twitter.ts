@@ -13,7 +13,7 @@ async function grabTimeLine(name: string): Promise<any[]> {
       qs: {
         screen_name: name,
         tweet_mode: 'extended',
-        count: 10,
+        count: 15,
       },
       proxy: process.env.proxy ? process.env.proxy : undefined,
     }),
