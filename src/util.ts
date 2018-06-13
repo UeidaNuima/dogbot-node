@@ -50,13 +50,24 @@ export async function downloadImage(
   return filenameWithPath;
 }
 
-export async function getCQImage(filename: string) {
+/**
+ * Download a user sent image to cqimg folder.
+ * @param filename image filename
+ * @param dir dir the image will be downloaded to
+ */
+export async function getCQImage(filename: string, dir: string) {
   const path = join(CQImageRoot, filename + '.cqimg');
   const CQImgFile = await fs.readFile(path, 'utf-8');
   const url = ini.parse(CQImgFile).image.url;
-  return await downloadImage(url, 'emoji', true, filename);
+  return await downloadImage(url, dir, true, filename);
 }
 
+/**
+ * Async type of String.prototype.replace() function.
+ * @param str string to be replaced
+ * @param re pattern, accept string or RegExp
+ * @param callback callback funtion for dealing with matched strings
+ */
 export function replaceAsync(
   str: string,
   re: RegExp | string,

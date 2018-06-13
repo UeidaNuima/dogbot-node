@@ -89,7 +89,7 @@ export default async (ctx: Context) => {
       return;
     }
     const imageFilename = image[1];
-    await getCQImage(imageFilename);
+    await getCQImage(imageFilename, 'emoji');
     targetEmoji.emoji.push(imageFilename);
     await targetEmoji.save();
     if (targetEmoji.emoji.length <= 10) {

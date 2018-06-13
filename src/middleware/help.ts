@@ -11,7 +11,7 @@ export default async (ctx: Context) => {
          group add <名称> [群号]
                del <名称> [群号]
          list <名称>
-  /poster
+  /poster [更新星期]
   /help
 ----
 桶 => /exp
