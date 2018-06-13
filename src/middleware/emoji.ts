@@ -2,6 +2,9 @@ import { Context, CQImage, RecvReplyableMessage } from 'dogq';
 import { split, getCQImage, replaceAsync, choose } from '../util';
 import { Emoji } from '../model';
 
+/**
+ * Replace (name) or a single name to cqimg and reply
+ */
 export async function replacer(ctx: Context, next: any) {
   const message = ctx.message as RecvReplyableMessage;
   let isReplaced = false;
@@ -72,7 +75,7 @@ export default async (ctx: Context) => {
         targetEmoji.group.indexOf(ctx.message.group) === -1
       ) {
         ctx.reply(
-          `这个表情组不在该群空间下，请尝试/emoji addgroup ${
+          `这个表情组不在这个群空间下，请尝试/emoji addgroup ${
             ctx.message.group
           }`,
         );
@@ -95,37 +98,60 @@ export default async (ctx: Context) => {
           .map(emoji => new CQImage(`emoji/${emoji}`).toString())
           .join('')}`,
       );
+      return;
     } else {
       ctx.reply(
         `现在[${targetEmoji.name.join()}]含有${
           targetEmoji.emoji.length
         }个表情。`,
       );
+      return;
     }
-  } else if (mainCommand === 'del' || mainCommand === 'remove') {
+  } else if (mainCommand === 'del') {
     // remove emoji by index
     const [name, indexStr] = argv;
-    const index = Number.parseInt(indexStr) - 1;
-    if (!name || Number.isNaN(index) || index < 0) {
-      ctx.reply('兄啊格式不对');
-      return;
-    }
     const targetEmoji = await Emoji.findOne({ name });
-    if (!targetEmoji || index >= targetEmoji.emoji.length) {
-      ctx.reply('没…没找到???');
+    if (!name) {
+      ctx.reply('兄啊名称呢');
       return;
     }
-    await Emoji.update(
-      { _id: targetEmoji._id },
-      { $unset: { [`emoji.${index}`]: 1 } },
-    );
-    await Emoji.update({ _id: targetEmoji._id }, { $pull: { emoji: null } });
-    ctx.reply(`从${targetEmoji.name.join()}里删掉了第${index + 1}个表情`);
-  } else if (mainCommand === 'alias') {
+    if (!targetEmoji) {
+      ctx.reply('没找到这个名称的表情组…');
+      return;
+    }
+    if (indexStr !== undefined) {
+      const index = Number.parseInt(indexStr) - 1;
+      if (
+        Number.isNaN(index) ||
+        index < 0 ||
+        index >= targetEmoji.emoji.length
+      ) {
+        ctx.reply('索引不太对劲。。');
+        return;
+      }
+      if (targetEmoji.emoji.length === 1) {
+        ctx.reply('无法删除组中的最后一个表情…请不要添加索引再次尝试');
+        return;
+      }
+      await Emoji.update(
+        { _id: targetEmoji._id },
+        { $unset: { [`emoji.${index}`]: 1 } },
+      );
+      await Emoji.update({ _id: targetEmoji._id }, { $pull: { emoji: null } });
+      ctx.reply(
+        `从[${targetEmoji.name.join()}]表情组里删掉了第${index + 1}个表情`,
+      );
+      return;
+    } else {
+      await Emoji.remove({ name });
+      ctx.reply(`[${targetEmoji.name.join()}]表情组被删掉了`);
+      return;
+    }
+  } else if (mainCommand === 'name') {
     // alias
     const [subCommand, ...subArgv] = argv;
     if (!(subCommand === 'add') && !(subCommand === 'del')) {
-      ctx.reply('兄啊格式不对');
+      ctx.reply('兄啊副指令呢');
       return;
     }
     const [dest, src] = subArgv;
@@ -145,15 +171,22 @@ export default async (ctx: Context) => {
       }
       targetEmoji.name.push(src);
       await targetEmoji.save();
+      ctx.reply(`这个表情组现在的触发名称为[${targetEmoji.name.join()}]`);
+      return;
     } else if (subCommand === 'del') {
       // remove alias
       if (targetEmoji.name.indexOf(src) === -1) {
         ctx.reply('这个表情组不含有这个名称');
         return;
       }
+      if (targetEmoji.name.length === 1) {
+        ctx.reply('无法删除组中的最后一个名称…');
+        return;
+      }
       await Emoji.update({ _id: targetEmoji._id }, { $pull: { name: src } });
+      ctx.reply(`这个表情组现在不会被${src}触发了`);
+      return;
     }
-    ctx.reply(`该表情组现在的触发名称为${targetEmoji.name.join()}`);
   } else if (mainCommand === 'group') {
     // group
     const [subCommand, ...subArgv] = argv;
@@ -183,14 +216,21 @@ export default async (ctx: Context) => {
       }
       targetEmoji.group.push(src);
       await targetEmoji.save();
+      ctx.reply(
+        `[${targetEmoji.name.join()}]表情组现在的存在的群组为${targetEmoji.group.join()}`,
+      );
+      return;
     } else if (subCommand === 'del') {
       // remove emoji to group
       if (targetEmoji.group.indexOf(src) === -1) {
-        ctx.reply('这个表情组中不存在这个群组');
+        ctx.reply(`[${targetEmoji.name.join()}]表情组中不存在这个群组`);
         return;
       }
       await Emoji.update({ _id: targetEmoji._id }, { $pull: { group: src } });
+      ctx.reply(`从[${targetEmoji.name.join()}]表情组删除了群组${src}`);
+      return;
     }
-    ctx.reply(`该表情组现在的存在的群组为${targetEmoji.group.join()}`);
   }
+  ctx.reply('兄啊没有这个指令');
+  return;
 };

@@ -58,13 +58,89 @@ it('should reply a emoji', async () => {
   ctx.msg = '';
 });
 
-it('should remove a emoji', async () => {
+it('should add a group', async () => {
   expect.assertions(2);
+  ctx.message = {
+    type: 'RecvGroupMessage',
+    QQ: '',
+    group: '3',
+    text: '',
+    message: '',
+  };
+  ctx.match = ['', 'group add test'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('[test]表情组现在的存在的群组为2,3');
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('已经存在这个群组了');
+  ctx.msg = '';
+});
+
+it('should remove a group', async () => {
+  ctx.message = {
+    type: 'RecvGroupMessage',
+    QQ: '',
+    group: '3',
+    text: '',
+    message: '',
+  };
+  ctx.match = ['', 'group del test'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('从[test]表情组删除了群组3');
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('[test]表情组中不存在这个群组');
+  ctx.msg = '';
+});
+
+it('should add a name', async () => {
+  // expect.assertions(2);
+  ctx.message = {
+    type: 'RecvGroupMessage',
+    QQ: '',
+    group: '3',
+    text: '',
+    message: '',
+  };
+  ctx.match = ['', 'name add test fuck'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('这个表情组现在的触发名称为[test,fuck]');
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('已经存在这个名称了');
+  ctx.msg = '';
+});
+
+it('should remove a name', async () => {
+  expect.assertions(3);
+  ctx.message = {
+    type: 'RecvGroupMessage',
+    QQ: '',
+    group: '3',
+    text: '',
+    message: '',
+  };
+  ctx.match = ['', 'name del test fuck'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('这个表情组现在不会被fuck触发了');
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('这个表情组不含有这个名称');
+  ctx.match = ['', 'name del test test'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('无法删除组中的最后一个名称…');
+  ctx.msg = '';
+});
+
+it('should remove a emoji', async () => {
+  expect.assertions(4);
   ctx.match = ['', 'del test 2'];
   await Emoji(ctx);
-  expect(ctx.msg).toEqual('从test里删掉了第2个表情');
+  expect(ctx.msg).toEqual('从[test]表情组里删掉了第2个表情');
   ctx.match = ['', 'del test 2'];
   await Emoji(ctx);
-  expect(ctx.msg).toEqual('没…没找到???');
+  expect(ctx.msg).toEqual('索引不太对劲。。');
+  ctx.match = ['', 'del test 1'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('无法删除组中的最后一个表情…请不要添加索引再次尝试');
+  ctx.match = ['', 'del test'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('[test]表情组被删掉了');
   ctx.msg = '';
 });
