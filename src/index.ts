@@ -1,5 +1,6 @@
 import { default as Bot } from 'dogq';
 import * as mongoose from 'mongoose';
+import config from './config';
 import Bark from './middleware/bark';
 import Exp from './middleware/exp';
 import Twitter from './middleware/twitter';
@@ -8,16 +9,10 @@ import {
   default as Emoji,
   replacer as EmojiReplacer,
 } from './middleware/emoji';
-// import { db } from './model';
+import Help from './middleware/help';
 import { createScheduleJobs } from './schedule';
 
-// db.on('error', () => {
-//   bot.logger.error('Connect to mongodb error!');
-//   process.exit(1);
-// });
-// bot.context.db = db;
-
-mongoose.connect('mongodb://localhost/aigis');
+mongoose.connect(`mongodb://localhost/${config.db}`);
 import './model';
 
 const bot = new Bot({ selfServerPort: 12455, debug: true });
@@ -29,6 +24,9 @@ bot.on({ text: /汪/ }, Bark);
 
 // Repace emoji
 bot.use(EmojiReplacer);
+
+// help
+bot.on({ text: /^(?:\/help )(.*)$/ }, Help);
 
 // emoticons
 bot.on({ text: /^(?:\/emoji )(.*)$/ }, Emoji);
