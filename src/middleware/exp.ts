@@ -204,8 +204,8 @@ export default async (ctx: Context) => {
       try {
         const res = await countStart(rr, elv, f.bucket, f.bless, i);
         return `[${i ? BUCKET_EXP * IKUSEI_FIX : BUCKET_EXP}]${
-          res.remainExp
-        }到下一级${res.remainExp}经验`;
+          res.lv
+        }级别到下一级${res.remainExp}经验`;
       } catch (err) {
         return err.message;
       }
