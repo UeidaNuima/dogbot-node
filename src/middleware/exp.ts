@@ -55,7 +55,7 @@ export async function countStart(
 
   let sumExp = bucket * BUCKET_EXP;
   if (bless) {
-    if (bless < 2) {
+    if (rarity < 2) {
       throw Error('兄啊这个稀有度有个naizi小祝福');
     }
     sumExp += bless * BLESS_EXP[rarity];
@@ -173,16 +173,20 @@ export default async (ctx: Context) => {
 
   if (startLv !== undefined) {
     async function genMsg(rr: number, slv: number, elv: number, i: boolean) {
-      const res = await countBucket(rr, slv, elv, i);
-      let replyMsg = `[${
-        i ? BUCKET_EXP : BUCKET_EXP * IKUSEI_FIX
-      }]${res.bucket.toFixed(2)}个`;
-      if (res.suggestion) {
-        replyMsg += `, ${res.suggestion.lv}到下一级${
-          res.suggestion.remainExp
-        }经验${Math.floor(res.bucket)}个`;
+      try {
+        const res = await countBucket(rr, slv, elv, i);
+        let replyMsg = `[${
+          i ? BUCKET_EXP : BUCKET_EXP * IKUSEI_FIX
+        }]${res.bucket.toFixed(2)}个`;
+        if (res.suggestion) {
+          replyMsg += `, ${res.suggestion.lv}到下一级${
+            res.suggestion.remainExp
+          }经验${Math.floor(res.bucket)}个`;
+        }
+        return replyMsg;
+      } catch (err) {
+        return err.message;
       }
-      return replyMsg;
     }
     const replyMsgAll = (await Promise.all([
       genMsg(rarity, startLv, endLv, true),
