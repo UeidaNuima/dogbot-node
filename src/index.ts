@@ -1,4 +1,4 @@
-import { default as Bot } from 'dogq';
+import { default as Bot, Level } from 'dogq';
 import * as mongoose from 'mongoose';
 import config from './config';
 import Bark from './middleware/bark';
@@ -11,14 +11,17 @@ import {
 } from './middleware/emoji';
 import Help from './middleware/help';
 import Poster from './middleware/poster';
+import Debugger from './middleware/debugger';
 import { createScheduleJobs } from './schedule';
 
 mongoose.connect(`mongodb://localhost/${config.db}`);
 import './model';
 
-const bot = new Bot({ selfServerPort: 12455, debug: true });
+const bot = new Bot({ selfServerPort: 12455, logLevel: Level.DEBUG });
 
 createScheduleJobs(bot);
+
+bot.use(Debugger);
 
 // Bark! Bark!
 bot.on({ text: /汪/ }, Bark);
