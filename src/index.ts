@@ -10,6 +10,7 @@ import {
   replacer as EmojiReplacer,
 } from './middleware/emoji';
 import Help from './middleware/help';
+import Poster from './middleware/poster';
 import { createScheduleJobs } from './schedule';
 
 mongoose.connect(`mongodb://localhost/${config.db}`);
@@ -38,7 +39,10 @@ bot.on({ text: /^(?:桶 |\/bucket )(.*)$/ }, Exp);
 bot.on({ text: /^(?:推特 |\/twitter )(.*)$/ }, Twitter);
 
 // calculate the exlpression
-bot.on({ text: /^(?:\/calc)(.*)$/ }, Calc);
+bot.on({ text: /^(?:\/calc )(.*)$/ }, Calc);
+
+// calculate the exlpression
+bot.on({ text: /^(?:\/poster |海报 )(.*)$/ }, Poster);
 
 // run!
 bot.start();

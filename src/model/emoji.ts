@@ -1,4 +1,4 @@
-import { Typegoose, prop, arrayProp } from 'typegoose';
+import { Typegoose, arrayProp } from 'typegoose';
 
 export default class Emoji extends Typegoose {
   @arrayProp({ required: true, items: String })
