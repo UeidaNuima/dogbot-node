@@ -2,6 +2,15 @@ import { Context, CQImage, RecvReplyableMessage } from 'dogq';
 import { split, getCQImage, replaceAsync, choose } from '../util';
 import { Emoji } from '../model';
 
+function imgConverter(imgStr: string) {
+  const match = /^.*\.(png|jpg|jpeg|gif)$/.exec(imgStr);
+  if (match) {
+    return new CQImage(`emoji/${imgStr}`).toString();
+  } else {
+    return imgStr;
+  }
+}
+
 /**
  * Replace (name) or a single name to cqimg and reply
  */
@@ -25,13 +34,13 @@ export async function replacer(ctx: Context, next: any) {
 
     if (emoji) {
       isReplaced = true;
-      return new CQImage(`emoji/${choose(emoji.emoji)}`).toString();
+      return imgConverter(choose(emoji.emoji));
     } else {
       return origin;
     }
   }
 
-  // bucket replace
+  // bracket replace
   let replaced = await replaceAsync(
     message.text,
     /[(（](.*?)[）)]/g,
@@ -48,15 +57,6 @@ export async function replacer(ctx: Context, next: any) {
     ctx.reply(replaced);
   } else {
     await next();
-  }
-}
-
-function imgConverter(imgStr: string) {
-  const match = /^.*\.(png|jpg|jpeg|gif)$/.exec(imgStr);
-  if (match) {
-    return new CQImage(`emoji/${imgStr}`).toString();
-  } else {
-    return imgStr;
   }
 }
 
