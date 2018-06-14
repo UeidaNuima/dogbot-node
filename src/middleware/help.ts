@@ -15,6 +15,7 @@ export default async (ctx: Context) => {
   /help
 ----
 桶 => /exp
-推特 => /twitter`;
+推特 => /twitter
+海报 => /poster`;
   ctx.reply(helper);
 };
