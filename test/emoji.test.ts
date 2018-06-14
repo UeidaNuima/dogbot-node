@@ -18,7 +18,7 @@ ctx.reply = function(msg) {
 };
 
 it('should add a emoji', async () => {
-  expect.assertions(2);
+  expect.assertions(4);
   ctx.message = {
     type: 'RecvGroupMessage',
     QQ: '1',
@@ -30,13 +30,21 @@ it('should add a emoji', async () => {
   await Emoji(ctx);
   await Emoji(ctx);
   expect(ctx.msg).toEqual(
-    '现在[test]含有以下的表情：[CQ:image,file=emoji/test.png][CQ:image,file=emoji/test.png]',
+    '现在[test]含有以下的表情：[CQ:image,file=emoji/test.png]|[CQ:image,file=emoji/test.png]',
   );
   ctx.match = ['', 'add test2 [CQ:image,file=test.png]'];
   await Emoji(ctx);
   expect(ctx.msg).toEqual(
     '现在[test2]含有以下的表情：[CQ:image,file=emoji/test.png]',
   );
+  ctx.match = ['', 'add test2 测个'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual(
+    '现在[test2]含有以下的表情：[CQ:image,file=emoji/test.png]|测个',
+  );
+  ctx.match = ['', 'add test2 测个[CQ:image,file=emoji/test.png]'];
+  await Emoji(ctx);
+  expect(ctx.msg).toEqual('兄啊不要图文混排');
   ctx.msg = '';
 });
 

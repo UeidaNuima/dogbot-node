@@ -51,6 +51,15 @@ export async function replacer(ctx: Context, next: any) {
   }
 }
 
+function imgConverter(imgStr: string) {
+  const match = /^.*\.(png|jpg|jpeg|gif)$/.exec(imgStr);
+  if (match) {
+    return new CQImage(`emoji/${imgStr}`).toString();
+  } else {
+    return imgStr;
+  }
+}
+
 export default async (ctx: Context) => {
   const [mainCommand, ...argv] = split(ctx.match[1]);
   if (mainCommand === 'add') {
@@ -90,18 +99,29 @@ export default async (ctx: Context) => {
 
     const image = CQImage.PATTERN.exec(emojiStr);
     if (!image) {
-      ctx.reply('图呢？没JB你说个图啊');
-      return;
+      // direct add text if no image
+      const match = /^.*\.(png|jpg|jpeg|gif)$/.exec(emojiStr);
+      if (match) {
+        ctx.reply('兄啊不要加图片扩展名的文字，会搞乱的');
+        return;
+      }
+      targetEmoji.emoji.push(emojiStr);
+    } else {
+      if (image[0] !== image.input) {
+        ctx.reply('兄啊不要图文混排');
+        return;
+      }
+      const imageFilename = image[1];
+      await getCQImage(imageFilename, 'emoji');
+      targetEmoji.emoji.push(imageFilename);
     }
-    const imageFilename = image[1];
-    await getCQImage(imageFilename, 'emoji');
-    targetEmoji.emoji.push(imageFilename);
+
     await targetEmoji.save();
     if (targetEmoji.emoji.length <= 10) {
       ctx.reply(
         `现在[${targetEmoji.name.join()}]含有以下的表情：${targetEmoji.emoji
-          .map(emoji => new CQImage(`emoji/${emoji}`).toString())
-          .join('')}`,
+          .map(imgConverter)
+          .join('|')}`,
       );
       return;
     } else {
@@ -243,10 +263,7 @@ export default async (ctx: Context) => {
         if (targetEmoji.emoji.length <= 10) {
           ctx.reply(
             `[${targetEmoji.name.join()}]含有以下的表情：${targetEmoji.emoji
-              .map(
-                (emoji, index) =>
-                  `[${index + 1}]>` + new CQImage(`emoji/${emoji}`).toString(),
-              )
+              .map((emoji, index) => `[${index + 1}]>` + imgConverter(emoji))
               .join('')}\n该表情所在的群组为${targetEmoji.group.join(',')}`,
           );
           return;
