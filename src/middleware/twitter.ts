@@ -20,7 +20,7 @@ export default async function twitter(ctx: Context) {
     return;
   }
   const twitters = await Twitter.find({
-    time: { $gte: deltaDays(-daysBefore - 1), $lt: deltaDays(-daysBefore) },
+    time: { $gte: deltaDays(-daysBefore), $lt: deltaDays(-daysBefore + 1) },
   });
   if (twitters.length !== 0) {
     ctx.reply((await Promise.all(twitters.map(t => t.toString()))).join('\n'));
