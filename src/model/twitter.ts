@@ -72,7 +72,8 @@ export default class Twitter extends Typegoose {
       .replace(/・/, '·')
       .replace(/✕/, '×')
       .replace(/#千年戦争アイギス/, '')
-      .replace(/♪/, '');
+      .replace(/♪/, '')
+      .trim();
 
     // download images
     const images = await Promise.all(
