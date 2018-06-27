@@ -73,7 +73,7 @@ export async function countStart(
       if (currentLvSumExp) {
         return {
           lv: currentLv,
-          remainExp: currentLvSumExp.exp - (exp - sumExp),
+          remainExp: (currentLvSumExp.exp - (exp - sumExp)).toFixed(0),
         };
       }
     }
