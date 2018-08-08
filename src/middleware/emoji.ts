@@ -43,7 +43,7 @@ export async function replacer(ctx: Context, next: any) {
   // bracket replace
   let replaced = await replaceAsync(
     message.text,
-    /[(（](.*?)[）)]/g,
+    /[(（]([^()（）]+?)[）)]/g,
     replaceCallback,
   );
 
