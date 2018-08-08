@@ -26,6 +26,7 @@ let isInit = false;
 export default async function grabAigisTwitter(bot: Bot) {
   const resp = await grabTimeLine('aigis1000');
   for (const twitter of resp) {
+    resp.reverse();
     const exist = await Twitter.findOne({ id: twitter.id });
     if (!exist) {
       const tweet = new Twitter();
