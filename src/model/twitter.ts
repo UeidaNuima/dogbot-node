@@ -69,10 +69,10 @@ export default class Twitter extends Typegoose {
   public async toString(this: InstanceType<Twitter>) {
     // replace charactors that can't be displayed in gb18030
     const text = this.text
-      .replace(/・/, '·')
-      .replace(/✕/, '×')
-      .replace(/#千年戦争アイギス/, '')
-      .replace(/♪/, '')
+      // .replace(/・/g, '·')
+      // .replace(/✕/g, '×')
+      // .replace(/#千年戦争アイギス/g, '')
+      // .replace(/♪/g, '')
       .trim();
 
     // download images
