@@ -24,22 +24,38 @@ async function grabTimeLine(name: string): Promise<any[]> {
 let isInit = false;
 
 export default async function grabAigisTwitter(bot: Bot) {
-  const resp = await grabTimeLine('aigis1000');
+  const resps = await Promise.all([
+    grabTimeLine('Aigis1000'),
+    grabTimeLine('GirlsFrontline'),
+  ]);
+  const resp = [...resps[0].reverse(), ...resps[1].reverse()];
   for (const twitter of resp) {
-    resp.reverse();
     const exist = await Twitter.findOne({ id: twitter.id });
     if (!exist) {
       const tweet = new Twitter();
       await tweet.create(twitter).save();
       // send to groups if inited
       if (isInit) {
-        for (const group of config.aigisGroups) {
-          bot.send({
-            type: 'SentGroupMessage',
-            group,
-            text: await tweet.toString(),
-          });
-          bot.logger.info(`Sent a new twitter to ${group} via aigis1000`);
+        if (tweet.user.screenName === 'Aigis1000') {
+          for (const group of config.aigisGroups) {
+            bot.send({
+              type: 'SentGroupMessage',
+              group,
+              text: await tweet.toString(),
+            });
+            bot.logger.info(`Sent a new twitter to ${group} via Aigis1000`);
+          }
+        } else if (tweet.user.screenName === 'GirlsFrontline') {
+          for (const group of config.gfGroups) {
+            bot.send({
+              type: 'SentGroupMessage',
+              group,
+              text: await tweet.toString(),
+            });
+            bot.logger.info(
+              `Sent a new twitter to ${group} via GirlsFrontline`,
+            );
+          }
         }
       } else {
         bot.logger.info(`Inited　a tweet.`);
