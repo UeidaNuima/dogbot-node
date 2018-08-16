@@ -1,6 +1,7 @@
-import { Context } from 'dogq';
+import { Context, RecvGroupMessage } from 'dogq';
 import { split } from '../util';
 import { Twitter } from '../model';
+import config from '../config';
 
 /**
  * Return a biased Date by given days
@@ -19,14 +20,28 @@ export default async function twitter(ctx: Context) {
     ctx.reply('兄啊格式不对');
     return;
   }
+  let screenName: string;
+  const message = ctx.message as RecvGroupMessage;
+  if (config.aigisGroups.includes(message.group)) {
+    screenName = 'Aigis1000';
+  } else if (config.gfGroups.includes(message.group)) {
+    screenName = 'GirlsFrontline';
+  } else {
+    return;
+  }
   const twitters = await Twitter.find({
     time: { $gte: deltaDays(-daysBefore - 1), $lt: deltaDays(-daysBefore) },
+    'user.screenName': screenName,
   });
   twitters.sort((a, b) => {
     const sa = a.time.getTime();
     const sb = b.time.getTime();
-    if (sa > sb) { return 1; }
-    if (sa === sb) { return 0; }
+    if (sa > sb) {
+      return 1;
+    }
+    if (sa === sb) {
+      return 0;
+    }
     return -1;
   });
   if (twitters.length !== 0) {
