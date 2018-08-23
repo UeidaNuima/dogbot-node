@@ -7,11 +7,11 @@ import config from '../config';
 export function createScheduleJobs(bot: Bot) {
   schedule.scheduleJob('*/30 * * * * *', grabAigisTwitter.bind(null, bot));
   schedule.scheduleJob(
-    '0 0 9 * * 4',
+    '0 0 8 * * 4',
     maintenanceAnnounce.bind(null, bot, config.aigisGroups, '千年战争aigis'),
   );
   schedule.scheduleJob(
-    '0 0 10 * * 4',
+    '0 0 9 * * 4',
     maintenanceAnnounce.bind(null, bot, config.gfGroups, '少女前线'),
   );
 }
