@@ -39,13 +39,15 @@ bot.on({ text: /^(?:\/emoji )(.*)$/ }, Emoji);
 bot.on({ text: /^(?:桶 |\/bucket )(.*)$/ }, Exp);
 
 // search for recent twitter
-bot.on({ text: /^(?:推特|\/twitter)(.*)$/ }, Twitter);
+bot.on({ text: /^(?:推特 |\/twitter )(.*)$/ }, Twitter);
+bot.on({ text: /^(推特|\/twitter)$/ }, Twitter);
 
 // calculate the exlpression
 bot.on({ text: /^(?:\/calc )(.*)$/ }, Calc);
 
 // calculate the exlpression
-bot.on({ text: /^(?:\/poster|海报)(.*)$/ }, Poster);
+bot.on({ text: /^(?:\/poster |海报 )(.*)$/ }, Poster);
+bot.on({ text: /^(\/poster|海报)$/ }, Poster);
 
 // run!
 bot.start();
