@@ -21,7 +21,10 @@ const bot = new Bot({ selfServerPort: 12455, logLevel: Level.DEBUG });
 
 createScheduleJobs(bot);
 
-if (process.env.BOT_ENV !== 'product') { bot.use(Debugger); }
+if (process.env.BOT_ENV !== 'product') {
+  bot.logger.info('Bot is running under debug mode!');
+  bot.use(Debugger);
+}
 
 // Bark! Bark!
 bot.on({ text: /汪/ }, Bark);
