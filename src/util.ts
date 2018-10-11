@@ -12,6 +12,9 @@ const CQImageRoot = join(CQRoot, 'data', 'image');
  * @param str string to be spilitted
  */
 export function split(str: string) {
+  if (!str) {
+    return [];
+  }
   const splitted = str.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
   return splitted.map(factor => factor.replace(/"/g, ''));
 }
