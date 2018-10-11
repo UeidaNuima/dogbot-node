@@ -14,8 +14,12 @@ function deltaDays(days: number) {
 }
 
 export default async function twitter(ctx: Context) {
-  const [param] = split(ctx.match[1]);
-  const daysBefore = param ? Number.parseInt(param) : 0;
+  let daysBefore = 0;
+  if (ctx.match) {
+    const [param] = split(ctx.match[1]);
+    daysBefore = param ? Number.parseInt(param) : 0;
+  }
+
   if (Number.isNaN(daysBefore) || daysBefore < 0) {
     ctx.reply('兄啊格式不对');
     return;

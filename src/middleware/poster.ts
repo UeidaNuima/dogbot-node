@@ -20,16 +20,18 @@ function yyyymmdd(date: Date) {
 }
 
 export default async (ctx: Context) => {
-  const [dayStr] = split(ctx.match[1]);
-  if (dayStr) {
-    const day = Number.parseInt(dayStr);
-    if (Number.isNaN(day) || day < 0 || day > 6) {
-      ctx.reply('兄啊星期不对');
-      return;
-    } else {
-      updateDay = day;
-      ctx.reply(`已将更新日期设置为星期${updateDay}`);
-      return;
+  if (ctx.match) {
+    const [dayStr] = split(ctx.match[1]);
+    if (dayStr) {
+      const day = Number.parseInt(dayStr);
+      if (Number.isNaN(day) || day < 0 || day > 6) {
+        ctx.reply('兄啊星期不对');
+        return;
+      } else {
+        updateDay = day;
+        ctx.reply(`已将更新日期设置为星期${updateDay}`);
+        return;
+      }
     }
   }
 
