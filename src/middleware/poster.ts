@@ -22,7 +22,7 @@ function yyyymmdd(date: Date) {
 export default async (ctx: Context) => {
   const [dayStr] = split(ctx.match[1]);
   if (dayStr) {
-    const day = Number.parseInt(dayStr);
+    const day = Number.parseInt(dayStr, 10);
     if (Number.isNaN(day) || day < 0 || day > 6) {
       ctx.reply('兄啊星期不对');
       return;
