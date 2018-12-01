@@ -142,7 +142,7 @@ export default async (ctx: Context) => {
     return;
   }
 
-  endLv = Number.parseInt(e);
+  endLv = Number.parseInt(e, 10);
   if (Number.isNaN(rarity)) {
     ctx.reply('兄啊输数字啊');
     return;
@@ -160,7 +160,7 @@ export default async (ctx: Context) => {
         }
       });
     } else {
-      startLv = Number.parseInt(m);
+      startLv = Number.parseInt(m, 10);
       if (Number.isNaN(startLv)) {
         ctx.reply('兄啊输数字啊');
         return;

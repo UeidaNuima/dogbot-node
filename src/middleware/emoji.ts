@@ -145,7 +145,7 @@ export default async (ctx: Context) => {
       return;
     }
     if (indexStr !== undefined) {
-      const index = Number.parseInt(indexStr) - 1;
+      const index = Number.parseInt(indexStr, 10) - 1;
       if (
         Number.isNaN(index) ||
         index < 0 ||
