@@ -1,7 +1,7 @@
 import * as request from 'request-promise-native';
 import * as fs from 'fs-extra';
 import * as ini from 'ini';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import config from './config';
 
 const CQRoot: string = config.CQRoot;
@@ -63,6 +63,33 @@ export async function getCQImage(filename: string, dir: string) {
   const CQImgFile = await fs.readFile(path, 'utf-8');
   const url = ini.parse(CQImgFile).image.url;
   return await downloadImage(url, dir, true, filename);
+}
+
+/**
+ * Save a buffer to a image.
+ * @param file file buffer
+ * @param filename image filename
+ * @param dir dir the image will be saved to
+ */
+export async function saveImageFromBuffer(
+  file: Buffer,
+  filename: string,
+  dir: string,
+) {
+  const filenameWithPath = join(dir, filename);
+  const realPath = join(CQImageRoot, filenameWithPath);
+  await fs.ensureDir(dirname(realPath));
+  await fs.writeFile(realPath, file);
+  return filenameWithPath;
+}
+
+export function checkImageExist(filename: string, dir: string) {
+  const filenameWithPath = join(dir, filename);
+  const realPath = join(CQImageRoot, filenameWithPath);
+  if (fs.existsSync(realPath)) {
+    return filenameWithPath;
+  }
+  return false;
 }
 
 /**

@@ -16,12 +16,8 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "pretty": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["./node_modules/@types", "./typings"]
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "scripts",
-    "test"
-  ]
+  "exclude": ["node_modules", "dist", "scripts", "test"]
 }

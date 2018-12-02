@@ -1,6 +1,8 @@
 import ExpSchema from './exp';
 import TwitterSchema from './twitter';
 import EmojiSchema from './emoji';
+import CardMetaSchema from './cardMeta';
+import ClassMetaSchema from './classMeta';
 
 export const Exp = new ExpSchema().getModelForClass(ExpSchema, {
   schemaOptions: {
@@ -19,3 +21,18 @@ export const Emoji = new EmojiSchema().getModelForClass(EmojiSchema, {
     collection: 'emoji',
   },
 });
+
+export const CardMeta = new CardMetaSchema().getModelForClass(CardMetaSchema, {
+  schemaOptions: {
+    collection: 'cardMeta',
+  },
+});
+
+export const ClassMeta = new ClassMetaSchema().getModelForClass(
+  ClassMetaSchema,
+  {
+    schemaOptions: {
+      collection: 'classMeta',
+    },
+  },
+);
