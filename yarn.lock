@@ -59,6 +59,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/graphql@^14.0.3":
+  version "14.0.3"
+  resolved "http://registry.npm.taobao.org/@types/graphql/download/@types/graphql-14.0.3.tgz#389e2e5b83ecdb376d9f98fae2094297bc112c1c"
+  integrity sha1-OJ4uW4Ps2zdtn5j64glCl7wRLBw=
+
 "@types/ini@^1.3.29":
   version "1.3.30"
   resolved "http://registry.npm.taobao.org/@types/ini/download/@types/ini-1.3.30.tgz#d1485459c9fad84e937414b832a2adb649eab379"
