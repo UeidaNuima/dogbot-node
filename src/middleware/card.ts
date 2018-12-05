@@ -76,7 +76,7 @@ const Card = async (ctx: Context) => {
     const cards = (await getCardsInfo(name)).filter(
       card => card.SellPrice !== 0,
     );
-    if (cards.length > 0) {
+    if (cards.length > 1) {
       if (index) {
         if (index > cards.length) {
           ctx.reply('索引越界');
