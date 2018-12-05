@@ -12,6 +12,7 @@ import {
 import Help from './middleware/help';
 import Poster from './middleware/poster';
 import Card from './middleware/card';
+import Conne from './middleware/conne';
 import Debugger from './middleware/debugger';
 import { createScheduleJobs } from './schedule';
 
@@ -55,6 +56,9 @@ bot.on({ text: /^(?:\/poster|海报)$/ }, Poster);
 
 // take a wiki screenshot
 bot.on({ text: /^(?:\/status |属性图 )(.*)$/ }, Card);
+
+// take a conne screenshot
+bot.on({ text: /^(?:\/conne |圆爹 )(.*)$/ }, Conne);
 
 // run!
 bot.start();
