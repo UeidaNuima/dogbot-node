@@ -11,6 +11,7 @@ import {
 } from './middleware/emoji';
 import Help from './middleware/help';
 import Poster from './middleware/poster';
+import Card from './middleware/card';
 import Debugger from './middleware/debugger';
 import { createScheduleJobs } from './schedule';
 
@@ -51,6 +52,9 @@ bot.on({ text: /^(?:\/calc )(.*)$/ }, Calc);
 // calculate the exlpression
 bot.on({ text: /^(?:\/poster |海报 )(.*)$/ }, Poster);
 bot.on({ text: /^(?:\/poster|海报)$/ }, Poster);
+
+// take a wiki screenshot
+bot.on({ text: /^(?:\/status |属性图 )(.*)$/ }, Card);
 
 // run!
 bot.start();

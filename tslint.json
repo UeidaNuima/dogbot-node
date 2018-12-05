@@ -9,6 +9,7 @@
     "interface-name": [true, "never-prefix"],
     "object-literal-sort-keys": false,
     "no-eval": false,
-    "no-conditional-assignment": false
+    "no-conditional-assignment": false,
+    "no-bitwise": false
   }
 }

@@ -51,8 +51,7 @@
     "phantom": "^6.0.3",
     "reflect-metadata": "^0.1.12",
     "request-promise-native": "^1.0.5",
-    "typegoose": "^5.2.1",
-    "webshot": "^0.18.0"
+    "typegoose": "^5.2.1"
   },
   "jest": {
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js?|ts?)$",

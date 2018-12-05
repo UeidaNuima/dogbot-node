@@ -2,10 +2,13 @@ import * as request from 'request-promise-native';
 import * as fs from 'fs-extra';
 import * as ini from 'ini';
 import { join, dirname } from 'path';
+import { getCard, getCards, getClass } from './apolloClient';
+import { CardMeta, ClassMeta } from './model';
 import config from './config';
 
 const CQRoot: string = config.CQRoot;
 const CQImageRoot = join(CQRoot, 'data', 'image');
+export const RARITY = ['铜', '铁', '银', '金', '白', '黑', undefined, '蓝'];
 
 /**
  * Split a string by spaces except in double quotes.
@@ -74,7 +77,7 @@ export async function getCQImage(filename: string, dir: string) {
 export async function saveImageFromBuffer(
   file: Buffer,
   filename: string,
-  dir: string,
+  dir = '.',
 ) {
   const filenameWithPath = join(dir, filename);
   const realPath = join(CQImageRoot, filenameWithPath);
@@ -145,4 +148,64 @@ export function choose(arr: any[]) {
   }
   const index = Math.floor(Math.random() * Math.floor(arr.length));
   return arr[index];
+}
+
+export async function getCardsInfo(name: string) {
+  // is name a card name
+  const cardsResp1 = await getCards({ name });
+  if (cardsResp1 && cardsResp1.data.cards.length !== 0) {
+    return cardsResp1.data.cards;
+  }
+
+  // is name a card nickName
+  const cardResp2 = await CardMeta.findOne({ NickName: name });
+  if (cardResp2) {
+    const card = await getCard(cardResp2.CardID);
+    if (card) {
+      return [card.data.card];
+    }
+  }
+
+  // is name a combination of rarity & class
+  let className = name;
+  let classID;
+
+  // if first char is rarity
+  const rarity = RARITY.findIndex(c => c === name[0]);
+  if (rarity !== -1) {
+    className = name.slice(1);
+  }
+  // name is a class name
+  const classResp1 = await getClass(className);
+  if (classResp1 && classResp1.data.classes.length !== 0) {
+    classID = classResp1.data.classes[0].ClassID;
+  } else {
+    // name is a class nickname
+    const classResp2 = await ClassMeta.findOne({ NickName: className });
+    if (classResp2) {
+      classID = classResp2.ClassID;
+    }
+  }
+
+  if (classID === undefined) {
+    throw new Error(`没有找到职业<${className}>`);
+  }
+
+  // use classId to find card name
+  const cardsResp = await getCards({ classID });
+  if (cardsResp && cardsResp.data.cards.length !== 0) {
+    const cards = cardsResp.data.cards.filter(card =>
+      rarity === -1 ? true : card.Rare === rarity,
+    );
+    if (cards.length === 0) {
+      throw new Error(
+        `在${
+          rarity === -1 ? '' : `[${RARITY[rarity]}]`
+        }<${className}>下一个单位都没有`,
+      );
+    }
+    return cards;
+  }
+
+  throw new Error(`没找到单位${name}`);
 }
