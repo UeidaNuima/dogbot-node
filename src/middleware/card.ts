@@ -73,9 +73,10 @@ const Card = async (ctx: Context) => {
 
   let cardName: string;
   try {
-    const cards = (await getCardsInfo(name)).filter(
-      card => card.SellPrice !== 0,
-    );
+    const cards = await getCardsInfo(name);
+    // .filter(
+    //   card => card.SellPrice !== 0,
+    // );
     if (cards.length > 1) {
       if (index) {
         if (index > cards.length) {

@@ -86,10 +86,10 @@ const Conne = async (ctx: Context) => {
   }
 
   results = results.filter(card => {
-    if (card.SellPrice === 0) {
-      // non-units
-      return false;
-    }
+    // if (card.SellPrice === 0) {
+    //   // non-units
+    //   return false;
+    // }
     if (card.Rare <= 2) {
       // conne site doesn't have units' rarity lower then gold
       return false;
