@@ -20,7 +20,7 @@ const SORTER_INDEX = {
  * @param name card name
  */
 export async function getConnePic(names: string[], sorter?: string) {
-  const instance = await phantom.create(['--proxy=http://localhost:1087']);
+  const instance = await phantom.create();
   const page = await instance.createPage();
   await page.property('viewportSize', { width: 800, height: 1 });
   await page.open(CONNE_URL);
@@ -119,17 +119,3 @@ const Conne = async (ctx: Context) => {
 };
 
 export default Conne;
-
-// mongoose.connect(`mongodb://localhost/test`);
-
-// class ctx extends Context {
-//   public match = ['', '黑兵 兵 白肉 -s dps'];
-//   constructor() {
-//     super({} as any, {} as any);
-//   }
-//   reply(message: string) {
-//     console.log(message);
-//   }
-// }
-
-// Conne(new ctx());

@@ -20,7 +20,7 @@ const WIKI_BASE_URL = 'http://wikiwiki.jp/aigiszuki/';
  * @param name card name
  */
 export async function getStatusPic(name: string) {
-  const instance = await phantom.create(['--proxy=http://localhost:1087']);
+  const instance = await phantom.create();
   const page = await instance.createPage();
   await page.property('viewportSize', { width: 800, height: 1 });
   await page.open(WIKI_BASE_URL + encodeURIComponent(name));
