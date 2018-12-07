@@ -91,23 +91,67 @@ export async function getCards(args: { name?: string; classID?: number }) {
   });
 }
 
-export async function getClass(name: string) {
+export async function getClass(Name?: string, ClassID?: number) {
   return client.query<{
-    classes: Array<{
+    class: {
       ClassID: number;
       Name: string;
-    }>;
+      MaxLevel: number;
+      JobChange: number;
+      JobChangeMaterial: Array<{
+        ClassID: number;
+        Name: string;
+      }>;
+      Data_ExtraAwakeOrb: Array<{
+        ClassID: number;
+        Name: string;
+      }>;
+    };
   }>({
     query: gql`
-      query($Name: String!) {
-        classes(Name: $Name) {
+      query($Name: String, $ClassID: Int) {
+        class(Name: $Name, ClassID: $ClassID) {
+          MaxLevel
           ClassID
           Name
+          JobChange
+          JobChangeMaterial {
+            ClassID
+            Name
+          }
+          Data_ExtraAwakeOrb {
+            ClassID
+            Name
+          }
         }
       }
     `,
     variables: {
-      Name: name,
+      Name,
+      ClassID,
+    },
+  });
+}
+
+export async function getClassesByMaterial(MaterialID: number) {
+  return client.query<{
+    classes: Array<{
+      ClassID: number;
+      Name: string;
+      JobChange: number;
+    }>;
+  }>({
+    query: gql`
+      query($MaterialID: Int!) {
+        classes(MaterialID: $MaterialID) {
+          ClassID
+          Name
+          JobChange
+        }
+      }
+    `,
+    variables: {
+      MaterialID,
     },
   });
 }

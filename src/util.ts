@@ -150,6 +150,28 @@ export function choose(arr: any[]) {
   return arr[index];
 }
 
+export async function getClassInfo(name?: string, id?: number) {
+  if (id) {
+    const classInfo1 = await getClass(undefined, id);
+    if (classInfo1 && classInfo1.data.class) {
+      return classInfo1.data.class;
+    }
+    throw new Error(`没有找到id为${id}的职业`);
+  }
+  const classInfo = await getClass(name);
+  if (classInfo && classInfo.data.class) {
+    return classInfo.data.class;
+  }
+  const classResp = await ClassMeta.findOne({ NickName: name });
+  if (classResp) {
+    const classInfo2 = await getClass(undefined, classResp.ClassID);
+    if (classInfo2 && classInfo2.data.class) {
+      return classInfo2.data.class;
+    }
+  }
+  throw new Error('没有找到对应职业');
+}
+
 export async function getCardsInfo(name: string) {
   // is name a card name
   const cardsResp1 = await getCards({ name });
@@ -177,8 +199,8 @@ export async function getCardsInfo(name: string) {
   }
   // name is a class name
   const classResp1 = await getClass(className);
-  if (classResp1 && classResp1.data.classes.length !== 0) {
-    classID = classResp1.data.classes[0].ClassID;
+  if (classResp1 && classResp1.data.class) {
+    classID = classResp1.data.class.ClassID;
   } else {
     // name is a class nickname
     const classResp2 = await ClassMeta.findOne({ NickName: className });
