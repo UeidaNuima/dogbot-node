@@ -44,7 +44,10 @@ const Material = async (ctx: Context) => {
         );
         orbs = orbs.concat(classInfo.Data_ExtraAwakeOrb.map(mat => mat.Name));
       }
-      let rep = `职业[${classInfo.Name}]\nCC素材：[${CCMaterials.join('][')}]`;
+      let rep = `职业[${classInfo.Name}]`;
+      if (CCMaterials.length !== 0) {
+        rep += `\nCC素材：[${CCMaterials.join('][')}]`;
+      }
       if (AWMaterials.length !== 0) {
         rep += `\n觉醒素材：[${AWMaterials.join('][')}]`;
       }
@@ -96,6 +99,6 @@ export default Material;
 //   console.log(message);
 // };
 
-// context.match = ['', '-r 兵'];
+// context.match = ['', 'ダークストーカー'];
 
 // Material(context);
