@@ -22,7 +22,7 @@ const SORTER_INDEX = {
 export async function getConnePic(names: string[], sorter?: string) {
   const instance = await phantom.create();
   const page = await instance.createPage();
-  await page.property('viewportSize', { width: 800, height: 1 });
+  await page.property('viewportSize', { width: 1200, height: 1 });
   await page.open(CONNE_URL);
   // const content = await page.property('content');
 
@@ -40,6 +40,7 @@ export async function getConnePic(names: string[], sorter?: string) {
       names.forEach(function(name) {
         $('tr:contains(' + name + ')').css('display', 'table-row');
       });
+      $('#sorter-mediaTableCol-1').click();
       if (sorterIndex) {
         $('#sorter-mediaTableCol-' + sorterIndex)
           .click()
@@ -49,6 +50,7 @@ export async function getConnePic(names: string[], sorter?: string) {
     names,
     sorterIndex,
   );
+  // tslint:enable
 
   const buffer = await page.renderBase64('png');
   // await page.render('233.png');
