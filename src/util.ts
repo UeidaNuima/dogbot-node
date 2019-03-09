@@ -215,7 +215,7 @@ export async function getCardsInfo(name: string) {
 
   // use classId to find card name
   const cardsResp = await getCards({ classID });
-  if (cardsResp && cardsResp.data.cards.length !== 0) {
+  if (cardsResp) {
     const cards = cardsResp.data.cards.filter(card =>
       rarity === -1 ? true : card.Rare === rarity,
     );

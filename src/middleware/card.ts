@@ -52,9 +52,8 @@ export async function getStatusPic(name: string) {
   return Buffer.from(buffer, 'base64');
 }
 
-const program = new Command().option('-f, --refresh', 'Force refresh');
-
 const Card = async (ctx: Context) => {
+  const program = new Command().option('-f, --refresh', 'Force refresh');
   program.parse(['', '', ...split(ctx.match[1])]);
   // console.log(program.refresh);
   const name = program.args[0];

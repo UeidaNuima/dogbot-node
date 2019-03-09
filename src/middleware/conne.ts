@@ -40,7 +40,7 @@ export async function getConnePic(names: string[], sorter?: string) {
       names.forEach(function(name) {
         $('tr:contains(' + name + ')').css('display', 'table-row');
       });
-      $('#sorter-mediaTableCol-1').click();
+      // $('#sorter-mediaTableCol-1').click();
       if (sorterIndex) {
         $('#sorter-mediaTableCol-' + sorterIndex)
           .click()
@@ -58,9 +58,8 @@ export async function getConnePic(names: string[], sorter?: string) {
   return Buffer.from(buffer, 'base64');
 }
 
-const program = new Command().option('-s, --sort <sorter>');
-
 const Conne = async (ctx: Context) => {
+  const program = new Command().option('-s, --sort <sorter>');
   program.parse(['', '', ...split(ctx.match[1])]);
   const sorter: string | undefined = program.sort;
 
