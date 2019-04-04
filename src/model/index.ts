@@ -1,5 +1,6 @@
 import ExpSchema from './exp';
 import TwitterSchema from './twitter';
+import YoutubeSchema from './youtube';
 import EmojiSchema from './emoji';
 import CardMetaSchema from './cardMeta';
 import ClassMetaSchema from './classMeta';
@@ -13,6 +14,12 @@ export const Exp = new ExpSchema().getModelForClass(ExpSchema, {
 export const Twitter = new TwitterSchema().getModelForClass(TwitterSchema, {
   schemaOptions: {
     collection: 'twitter',
+  },
+});
+
+export const Youtube = new YoutubeSchema().getModelForClass(YoutubeSchema, {
+  schemaOptions: {
+    collection: 'youtube',
   },
 });
 
