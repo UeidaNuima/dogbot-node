@@ -44,15 +44,6 @@ async function grabYoutubeSearchResoult(
 
 let isInited = false;
 
-grabYoutubeSearchResoult('UC1suqwovbL1kzsoaZgFZLKg', 'live')
-  .then(res => {
-    res.items.forEach((element: any) => {
-      console.dir(element);
-    });
-    console.dir(res);
-  })
-  .catch(err => console.error(err));
-
 export default async function grabChannels(bot: any) {
   for (const notification of YOUTUBE.notifications) {
     let jobs: any[] = [];
