@@ -26,7 +26,7 @@ let isInit = false;
 export default async function grabAigisTwitter(bot: Bot) {
   const resps = await Promise.all([
     grabTimeLine('Aigis1000'),
-    grabTimeLine('GirlsFrontline'),
+    // grabTimeLine('GirlsFrontline'),
   ]);
   const resp = [...resps[0].reverse(), ...resps[1].reverse()];
   for (const twitter of resp) {
