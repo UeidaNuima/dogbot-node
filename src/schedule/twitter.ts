@@ -28,7 +28,7 @@ export default async function grabAigisTwitter(bot: Bot) {
     grabTimeLine('Aigis1000'),
     // grabTimeLine('GirlsFrontline'),
   ]);
-  const resp = [...resps[0].reverse(), ...resps[1].reverse()];
+  const resp = [...resps[0].reverse()];
   for (const twitter of resp) {
     const exist = await Twitter.findOne({ id: twitter.id });
     if (!exist) {
