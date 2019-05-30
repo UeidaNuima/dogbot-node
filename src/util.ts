@@ -18,7 +18,7 @@ export function split(str: string) {
   if (!str) {
     return [];
   }
-  const splitted = str.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+  const splitted = str.trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
   return splitted.map(factor => factor.replace(/"/g, ''));
 }
 

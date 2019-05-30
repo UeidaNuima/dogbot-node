@@ -1,4 +1,3 @@
-import { default as Bot, Level } from 'dogq';
 import * as mongoose from 'mongoose';
 import config from './config';
 import Bark from './middleware/bark';
@@ -14,55 +13,103 @@ import Poster from './middleware/poster';
 import Card from './middleware/card';
 import Conne from './middleware/conne';
 import Material from './middleware/material';
-import Debugger from './middleware/debugger';
 import { createScheduleJobs } from './schedule';
 
-mongoose.connect(`mongodb://localhost/${config.db}`);
-import './model';
+import bot from './bot';
 
-const bot = new Bot({ selfServerPort: 12455, logLevel: Level.DEBUG });
+mongoose.connect(
+  `mongodb://localhost/${config.db}`,
+  { useNewUrlParser: true },
+);
+import './model';
 
 createScheduleJobs(bot);
 
-if (process.env.BOT_ENV !== 'product') {
-  bot.logger.info('Bot is running under debug mode!');
-  bot.use(Debugger);
-}
+bot
+  .on('socket.connecting', (socketType, attempts) => {
+    console.log('嘗試第 %d 次連線 _(:з」∠)_', attempts);
+  })
+  .on('socket.connect', (socketType, sock, attempts) => {
+    console.log('第 %d 次連線嘗試成功 ヽ(✿ﾟ▽ﾟ)ノ', attempts);
+  })
+  .on('socket.failed', (socketType, attempts) => {
+    console.log('第 %d 次連線嘗試失敗 。･ﾟ･(つд`ﾟ)･ﾟ･', attempts);
+  });
 
-// Bark! Bark!
-bot.on({ text: /汪/ }, Bark);
+bot
+  .on('message', async (event, ctx, tags) => {
+    return Bark();
+  })
+  .on('message', async (event, ctx, tags) => {
+    // calc
+    if (ctx.raw_message.startsWith('/calc')) {
+      return Calc(event, ctx, tags);
+    }
 
-// Repace emoji
-bot.use(EmojiReplacer);
+    // poster
+    if (
+      ctx.raw_message.startsWith('/poster') ||
+      ctx.raw_message.startsWith('海报')
+    ) {
+      return await Poster(event, ctx, tags);
+    }
 
-// help
-bot.on({ text: /^(?:\/help)(.*)$/ }, Help);
+    // exp
+    if (
+      ctx.raw_message.startsWith('/bucket') ||
+      ctx.raw_message.startsWith('桶')
+    ) {
+      return await Exp(event, ctx, tags);
+    }
 
-// emoticons
-bot.on({ text: /^(?:\/emoji )(.*)$/ }, Emoji);
+    // conne
+    if (
+      ctx.raw_message.startsWith('/conne') ||
+      ctx.raw_message.startsWith('圆爹')
+    ) {
+      return await Conne(event, ctx, tags);
+    }
 
-// count exp and buckets
-bot.on({ text: /^(?:桶 |\/bucket )(.*)$/ }, Exp);
+    // status
+    if (
+      ctx.raw_message.startsWith('/status') ||
+      ctx.raw_message.startsWith('属性图')
+    ) {
+      return await Card(event, ctx, tags);
+    }
 
-// search for recent twitter
-bot.on({ text: /^(?:推特 |\/twitter )(.*)$/ }, Twitter);
-bot.on({ text: /^(?:推特|\/twitter)$/ }, Twitter);
+    // material
+    if (
+      ctx.raw_message.startsWith('/material') ||
+      ctx.raw_message.startsWith('素材')
+    ) {
+      return await Material(event, ctx, tags);
+    }
 
-// calculate the exlpression
-bot.on({ text: /^(?:\/calc )(.*)$/ }, Calc);
+    // twitter
+    if (
+      ctx.raw_message.startsWith('/twitter') ||
+      ctx.raw_message.startsWith('推特')
+    ) {
+      return await Twitter(event, ctx, tags);
+    }
 
-// calculate the exlpression
-bot.on({ text: /^(?:\/poster |海报 )(.*)$/ }, Poster);
-bot.on({ text: /^(?:\/poster|海报)$/ }, Poster);
+    // twitter
+    if (ctx.raw_message.startsWith('/emoji')) {
+      return await Emoji(event, ctx, tags);
+    }
 
-// take a wiki screenshot
-bot.on({ text: /^(?:\/status |属性图 )(.*)$/ }, Card);
+    // help
+    if (ctx.raw_message === '/help') {
+      return await Help();
+    }
 
-// take a conne screenshot
-bot.on({ text: /^(?:\/conne |圆爹 )(.*)$/ }, Conne);
+    // replace emoji
+    if (ctx.message_type === 'group') {
+      return EmojiReplacer(event, ctx, tags);
+    }
 
-// get material infomation
-bot.on({ text: /^(?:\/material |素材 )(.*)$/ }, Material);
+    return;
+  });
 
-// run!
-bot.start();
+bot.connect();

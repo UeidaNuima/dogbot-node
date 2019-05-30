@@ -1,14 +1,16 @@
-import Bot, { CQAt } from 'dogq';
+import { CQAt, CQText } from 'cq-websocket';
 export default function maintenanceAnnounce(
-  bot: Bot,
+  bot: any,
   groups: any[],
   target: string,
 ) {
   for (const group of groups) {
-    bot.send({
-      type: 'SentGroupMessage',
-      group,
-      text: `${new CQAt('all')}距离${target}维护还有一个小时整，亏亿警告`,
+    bot('send_group_msg', {
+      group_id: group,
+      message: [
+        new CQAt('all' as any),
+        new CQText(`距离${target}维护还有一个小时整，亏亿警告`),
+      ],
     });
   }
 }

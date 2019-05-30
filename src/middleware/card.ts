@@ -1,6 +1,6 @@
 import * as phantom from 'phantom';
 import * as cheerio from 'cheerio';
-import { Context, CQImage } from 'dogq';
+import { CQImage } from 'cq-websocket';
 import {
   split,
   saveImageFromBuffer,
@@ -8,6 +8,7 @@ import {
   getCardsInfo,
   RARITY,
 } from '../util';
+import bot from '../bot';
 process.exit = (() => {
   return;
 }) as () => never;
@@ -52,51 +53,44 @@ export async function getStatusPic(name: string) {
   return Buffer.from(buffer, 'base64');
 }
 
-const Card = async (ctx: Context) => {
+const Card = async (event: any, ctx: any, tags: any[]) => {
   const program = new Command().option('-f, --refresh', 'Force refresh');
-  program.parse(['', '', ...split(ctx.match[1])]);
+  program.parse(['', ...split(ctx.raw_message)]);
   // console.log(program.refresh);
   const name = program.args[0];
   let index: number | undefined;
   if (program.args.length >= 2) {
     index = Number.parseInt(program.args[1], 10);
     if (Number.isNaN(index)) {
-      ctx.reply('索引位请输入数字');
-      return;
+      return '索引位请输入数字';
     }
     if (index <= 0) {
-      ctx.reply('索引至少为1');
-      return;
+      return '索引至少为1';
     }
   }
 
   let cardName: string;
   try {
     const cards = await getCardsInfo(name);
-    // .filter(
-    //   card => card.SellPrice !== 0,
-    // );
     if (cards.length > 1) {
       if (index) {
         if (index > cards.length) {
-          ctx.reply('索引越界');
-          return;
+          return '索引越界';
         }
         cardName = cards[index - 1].Name;
       } else {
-        ctx.reply(
+        return (
           `「${name}」不止一个单位，以下列出所有：\n` +
-            cards
-              .map(
-                card =>
-                  `[${RARITY[card.Rare]}]${card.Name}` +
-                  (card.NickName && card.NickName.length !== 0
-                    ? `(${card.NickName.join(',')})`
-                    : ''),
-              )
-              .join('\n'),
+          cards
+            .map(
+              card =>
+                `[${RARITY[card.Rare]}]${card.Name}` +
+                (card.NickName && card.NickName.length !== 0
+                  ? `(${card.NickName.join(',')})`
+                  : ''),
+            )
+            .join('\n')
         );
-        return;
       }
     } else {
       cardName = cards[0].Name;
@@ -104,19 +98,22 @@ const Card = async (ctx: Context) => {
 
     let imgPath: false | string = false;
     if (!program.refresh) {
-      ctx.reply(`尝试从缓存中获取${cardName}的wiki截图...`);
+      bot('send_msg', {
+        ...ctx,
+        message: `尝试从缓存中获取${cardName}的wiki截图...`,
+      });
       imgPath = checkImageExist(cardName + '.png', 'unit');
     }
     if (!imgPath) {
-      ctx.reply(`正在获取${cardName}的wiki截图...`);
+      bot('send_msg', { ...ctx, message: `正在获取${cardName}的wiki截图...` });
       const imgBuffer = await getStatusPic(cardName);
       imgPath = await saveImageFromBuffer(imgBuffer, cardName + '.png', 'unit');
     }
 
-    ctx.reply(new CQImage(imgPath).toString());
+    return [new CQImage(imgPath)];
   } catch (err) {
-    ctx.reply(err.message);
-    ctx.bot.logger.error(err.stack);
+    console.error(err.stack);
+    return err.message;
   }
 };
 

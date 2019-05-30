@@ -1,6 +1,7 @@
-import { Context, CQImage } from 'dogq';
+import { CQImage } from 'cq-websocket';
 import * as phantom from 'phantom';
 import { split, getCardsInfo, saveImageFromBuffer } from '../util';
+import bot from '../bot';
 process.exit = (() => {
   return;
 }) as () => never;
@@ -58,15 +59,14 @@ export async function getConnePic(names: string[], sorter?: string) {
   return Buffer.from(buffer, 'base64');
 }
 
-const Conne = async (ctx: Context) => {
+const Conne = async (event: any, ctx: any, tags: any[]) => {
   const program = new Command().option('-s, --sort <sorter>');
-  program.parse(['', '', ...split(ctx.match[1])]);
+  program.parse(['', ...split(ctx.raw_message)]);
   const sorter: string | undefined = program.sort;
 
   // unavaliable sorters
   if (sorter && !SORTER_INDEX[sorter]) {
-    ctx.reply(`[${sorter}]不为[dps, hp, atk, def, mdef]之一`);
-    return;
+    return `[${sorter}]不为[dps, hp, atk, def, mdef]之一`;
   }
 
   let results: Array<{
@@ -81,42 +81,36 @@ const Conne = async (ctx: Context) => {
     try {
       results = results.concat(await getCardsInfo(name));
     } catch (err) {
-      ctx.reply(err.message);
       console.error(err.stack);
+      return err.message;
     }
   }
 
   results = results.filter(card => {
-    // if (card.SellPrice === 0) {
-    //   // non-units
-    //   return false;
-    // }
     if (card.Rare <= 2) {
       // conne site doesn't have units' rarity lower then gold
       return false;
     }
     if (!card.ConneName) {
       // no conne name
-      ctx.reply(`[${card.Name}]还没有添加圆爹名`);
+      bot('send_msg', { ...ctx, message: `[${card.Name}]还没有添加圆爹名` });
       return false;
     }
     return true;
   });
 
   if (results.length === 0) {
-    ctx.reply('一个单位都没有');
-    return;
+    return '一个单位都没有';
   }
 
-  ctx.reply('正在获取圆爹截图...');
+  bot('send_msg', { ...ctx, message: '正在获取圆爹截图...' });
 
   const imgBuffer = await getConnePic(
     results.map(result => result.ConneName),
     sorter,
   );
   const imgPath = await saveImageFromBuffer(imgBuffer, 'conne.png');
-  ctx.reply(new CQImage(imgPath).toString());
-  // console.log('ok');
+  return [new CQImage(imgPath)];
 };
 
 export default Conne;

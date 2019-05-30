@@ -1,4 +1,4 @@
-import { Context, CQImage } from 'dogq';
+import { CQImage } from 'cq-websocket';
 import { split, downloadImage } from '../util';
 
 let updateDay = 4;
@@ -19,8 +19,8 @@ function yyyymmdd(date: Date) {
   ].join('');
 }
 
-export default async (ctx: Context) => {
-  const [dayStr] = split(ctx.match[1]);
+export default async (event: any, ctx: any, tags: any[]) => {
+  const dayStr = ctx.raw_message.replace(/海报/, '').replace(/\/poster/, '');
   if (dayStr) {
     const day = Number.parseInt(dayStr, 10);
     if (Number.isNaN(day) || day < 0 || day > 6) {
@@ -48,8 +48,9 @@ export default async (ctx: Context) => {
       true,
       filename,
     );
-    ctx.reply(new CQImage(filenameWithPath).toString());
+    console.log(filenameWithPath);
+    return [new CQImage(filenameWithPath)];
   } catch (err) {
-    ctx.reply('拉不到图…可能是网络问题或者日期不太对？');
+    return '拉不到图…可能是网络问题或者日期不太对？';
   }
 };

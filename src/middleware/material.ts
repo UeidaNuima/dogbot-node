@@ -1,4 +1,3 @@
-import { Context } from 'dogq';
 import { split, getClassInfo } from '../util';
 import { getClassesByMaterial } from '../apolloClient';
 process.exit = (() => {
@@ -8,8 +7,8 @@ import { Command } from 'commander';
 
 const program = new Command().option('-r, --reverse', 'Reverse search');
 
-const Material = async (ctx: Context) => {
-  program.parse(['', '', ...split(ctx.match[1])]);
+const Material = async (event: any, ctx: any, tags: any[]) => {
+  program.parse(['', ...split(ctx.raw_message)]);
   const name = program.args[0];
   try {
     const classInfo = await getClassInfo(name);
@@ -19,8 +18,7 @@ const Material = async (ctx: Context) => {
       let orbs: string[] = [];
 
       if (!classInfo.JobChange) {
-        ctx.reply(`职业[${classInfo.Name}]没有cc也没有觉醒`);
-        return;
+        return `职业[${classInfo.Name}]没有cc也没有觉醒`;
       }
       if (classInfo.MaxLevel === 50) {
         // if the change will be cc
@@ -54,8 +52,7 @@ const Material = async (ctx: Context) => {
       if (orbs.length !== 0) {
         rep += `\n觉醒珠子：[${orbs.join('][')}]`;
       }
-      ctx.reply(rep);
-      return;
+      return rep;
     } else {
       const {
         data: { classes },
@@ -73,20 +70,16 @@ const Material = async (ctx: Context) => {
         //     filteredClasses.push(c);
         //   }
         // });
-        ctx.reply(
-          `以职业[${classInfo.Name}]为素材的有：\n[${classes
-            .map(c => c.Name)
-            .join('][')}]`,
-        );
-        return;
+
+        return `以职业[${classInfo.Name}]为素材的有：\n[${classes
+          .map(c => c.Name)
+          .join('][')}]`;
       }
-      ctx.reply(`没有以职业[${classInfo.Name}]为素材的职业。`);
-      return;
+      return `没有以职业[${classInfo.Name}]为素材的职业。`;
     }
   } catch (err) {
-    ctx.reply(err.message);
-    ctx.bot.logger.error(err.stack);
-    return;
+    console.error(err.stack);
+    return err.message;
   }
 };
 

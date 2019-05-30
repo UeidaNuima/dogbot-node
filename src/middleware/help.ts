@@ -1,6 +1,4 @@
-import { Context } from 'dogq';
-
-export default async (ctx: Context) => {
+export default async () => {
   const helper = `ケルベロス ver4.1.0
   /twitter [几天以前]
   /exp 稀有度 初始等级 目标等级
@@ -24,5 +22,5 @@ export default async (ctx: Context) => {
 属性图 => /status
 圆爹 => /conne
 素材 => /material`;
-  ctx.reply(helper);
+  return helper;
 };

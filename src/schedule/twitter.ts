@@ -1,6 +1,5 @@
 import * as request from 'request-promise-native';
 import { Twitter } from '../model';
-import Bot from 'dogq';
 import config from '../config';
 
 const oauth = config.twitter;
@@ -23,7 +22,7 @@ async function grabTimeLine(name: string): Promise<any[]> {
 // init twitter only once
 let isInit = false;
 
-export default async function grabAigisTwitter(bot: Bot) {
+export default async function grabAigisTwitter(bot: any) {
   const resps = await Promise.all([
     grabTimeLine('Aigis1000'),
     // grabTimeLine('GirlsFrontline'),
@@ -38,27 +37,15 @@ export default async function grabAigisTwitter(bot: Bot) {
       if (isInit) {
         if (tweet.user.screenName === 'Aigis1000') {
           for (const group of config.aigisGroups) {
-            bot.send({
-              type: 'SentGroupMessage',
-              group,
-              text: await tweet.toString(),
+            bot('send_group_msg', {
+              group_id: group,
+              message: await tweet.toArray(),
             });
-            bot.logger.info(`Sent a new twitter to ${group} via Aigis1000`);
-          }
-        } else if (tweet.user.screenName === 'GirlsFrontline') {
-          for (const group of config.gfGroups) {
-            bot.send({
-              type: 'SentGroupMessage',
-              group,
-              text: await tweet.toString(),
-            });
-            bot.logger.info(
-              `Sent a new twitter to ${group} via GirlsFrontline`,
-            );
+            console.info(`Sent a new twitter to ${group} via Aigis1000`);
           }
         }
       } else {
-        bot.logger.info(`Inited　a tweet.`);
+        console.info(`Inited　a tweet.`);
       }
     }
   }

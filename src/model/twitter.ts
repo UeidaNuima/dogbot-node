@@ -5,7 +5,7 @@ import {
   InstanceType,
   arrayProp,
 } from 'typegoose';
-import { CQImage } from 'dogq';
+import { CQImage, CQText } from 'cq-websocket';
 import { downloadImage } from '../util';
 
 export default class Twitter extends Typegoose {
@@ -66,7 +66,7 @@ export default class Twitter extends Typegoose {
    * @returns string
    */
   @instanceMethod
-  public async toString(this: InstanceType<Twitter>) {
+  public async toArray(this: InstanceType<Twitter>) {
     // replace charactors that can't be displayed in gb18030
     const text = this.text
       // .replace(/・/g, '·')
@@ -81,10 +81,11 @@ export default class Twitter extends Typegoose {
     );
 
     // return the whole string
-    return `====${
-      this.user.name
-    }====\n${this.time.toLocaleString()}\n${text}\n${images
-      .map(image => new CQImage(image).toString())
-      .join('')}`;
+    return [
+      new CQText(
+        `====${this.user.name}====\n${this.time.toLocaleString()}\n${text}\n`,
+      ),
+      ...images.map(image => new CQImage(image)),
+    ];
   }
 }

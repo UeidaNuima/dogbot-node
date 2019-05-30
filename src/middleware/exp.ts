@@ -1,4 +1,3 @@
-import { Context } from 'dogq';
 import { Exp } from '../model';
 import { split } from '../util';
 
@@ -120,7 +119,7 @@ export async function countBucket(
   };
 }
 
-export default async (ctx: Context) => {
+export default async (event: any, ctx: any, tags: any[]) => {
   // const message = ctx.message as RecvReplyableMessage;
   let rarity: number;
   let startLv: number | undefined;
@@ -130,22 +129,24 @@ export default async (ctx: Context) => {
   };
   let endLv: number;
 
-  const [r, m, e] = split(ctx.match[1]);
+  const [r, m, e] = split(
+    ctx.raw_message
+      .replace('/bucket', '')
+      .replace('桶', '')
+      .trim(),
+  );
   if (!(r && m && e)) {
-    ctx.reply('兄啊格式不对');
-    return;
+    return '兄啊格式不对';
   }
 
   rarity = RARITY.search(r);
   if (rarity === -1) {
-    ctx.reply('兄啊你这是什么稀有度');
-    return;
+    return '兄啊你这是什么稀有度';
   }
 
   endLv = Number.parseInt(e, 10);
   if (Number.isNaN(rarity)) {
-    ctx.reply('兄啊输数字啊');
-    return;
+    return '兄啊输数字啊';
   }
 
   try {
@@ -162,8 +163,7 @@ export default async (ctx: Context) => {
     } else {
       startLv = Number.parseInt(m, 10);
       if (Number.isNaN(startLv)) {
-        ctx.reply('兄啊输数字啊');
-        return;
+        return '兄啊输数字啊';
       }
     }
   } catch (err) {
@@ -188,12 +188,10 @@ export default async (ctx: Context) => {
         return err.message;
       }
     }
-    const replyMsgAll = (await Promise.all([
+    return (await Promise.all([
       genMsg(rarity, startLv, endLv, true),
       genMsg(rarity, startLv, endLv, false),
     ])).join('\n');
-    ctx.reply(replyMsgAll);
-    return;
   } else {
     async function genMsg(
       rr: number,
@@ -210,11 +208,9 @@ export default async (ctx: Context) => {
         return err.message;
       }
     }
-    const replyMsgAll = (await Promise.all([
+    return (await Promise.all([
       genMsg(rarity, endLv, factor, true),
       genMsg(rarity, endLv, factor, false),
     ])).join('\n');
-    ctx.reply(replyMsgAll);
-    return;
   }
 };

@@ -1,4 +1,3 @@
-import { Context, RecvGroupMessage } from 'dogq';
 import { split } from '../util';
 import { Twitter } from '../model';
 import config from '../config';
@@ -13,18 +12,16 @@ function deltaDays(days: number) {
   return date;
 }
 
-export default async function twitter(ctx: Context) {
-  const [param] = split(ctx.match[1]);
+export default async function twitter(event: any, ctx: any, tags: any) {
+  const [_, param] = split(ctx.raw_message);
   const daysBefore = param ? Number.parseInt(param, 10) : 0;
   if (Number.isNaN(daysBefore) || daysBefore < 0) {
-    ctx.reply('兄啊格式不对');
-    return;
+    return '兄啊格式不对';
   }
   let screenName: string;
-  const message = ctx.message as RecvGroupMessage;
-  if (config.aigisGroups.includes(message.group)) {
+  if (config.aigisGroups.includes(ctx.group_id)) {
     screenName = 'Aigis1000';
-  } else if (config.gfGroups.includes(message.group)) {
+  } else if (config.gfGroups.includes(ctx.group_id)) {
     screenName = 'GirlsFrontline';
   } else {
     return;
@@ -45,8 +42,8 @@ export default async function twitter(ctx: Context) {
     return -1;
   });
   if (twitters.length !== 0) {
-    ctx.reply((await Promise.all(twitters.map(t => t.toString()))).join('\n'));
+    return await Promise.all(twitters.map(t => t.toArray()));
   } else {
-    ctx.reply('安娜啥都没说');
+    return '莫得推特';
   }
 }

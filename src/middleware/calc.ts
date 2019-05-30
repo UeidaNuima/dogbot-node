@@ -1,16 +1,14 @@
-import { Context } from 'dogq';
-
 /**
  * Give the answer to the given equation
  */
-export default async function calc(ctx: Context) {
-  const eq = ctx.match[1];
+export default async function calc(event: any, ctx: any, tags: any[]) {
+  const eq = tags[0].data.text.replace(/\/calc/, '');
   const match = eq.match(/[0-9\(\)\+\-\*\/\^\&\%\|\.\~\<\> ]+/);
   if (match) {
     try {
-      ctx.reply(eval(match[0].replace(/\^/, '**')));
+      return eval(match[0].replace(/\^/, '**')).toString();
     } catch {
-      ctx.reply('解　読　不　能');
+      return '解　読　不　能';
     }
   }
 }
