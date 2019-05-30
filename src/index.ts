@@ -38,7 +38,9 @@ bot
 
 bot
   .on('message', async (event, ctx, tags) => {
-    return Bark();
+    if (ctx.raw_message === '汪') {
+      bot('send_msg', { ...ctx, message: '汪！' });
+    }
   })
   .on('message', async (event, ctx, tags) => {
     // calc
