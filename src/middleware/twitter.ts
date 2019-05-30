@@ -42,7 +42,9 @@ export default async function twitter(event: any, ctx: any, tags: any) {
     return -1;
   });
   if (twitters.length !== 0) {
-    return await Promise.all(twitters.map(t => t.toArray()));
+    return ([] as any[]).concat(
+      ...(await Promise.all(twitters.map(t => t.toArray()))),
+    );
   } else {
     return '莫得推特';
   }
