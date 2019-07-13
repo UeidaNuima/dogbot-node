@@ -2,8 +2,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "module": "commonjs",
-    "target": "es6",
-    "sourceMap": true,
+    "target": "es2017",
+    "inlineSourceMap": true,
     "rootDir": "src",
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
@@ -17,7 +17,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "pretty": true,
     "emitDecoratorMetadata": true,
-    "lib": ["esnext", "dom"],
     "typeRoots": ["./node_modules/@types", "./typings"]
   },
   "exclude": ["node_modules", "dist", "scripts", "test"]
