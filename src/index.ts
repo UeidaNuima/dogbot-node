@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 import config from './config';
-import Bark from './middleware/bark';
 import Exp from './middleware/exp';
 import Twitter from './middleware/twitter';
 import Calc from './middleware/calc';

@@ -1,5 +1,5 @@
 import { CQImage } from 'cq-websocket';
-import { split, downloadImage } from '../util';
+import { downloadImage } from '../util';
 
 let updateDay = 4;
 const BASE_URL =
@@ -48,7 +48,6 @@ export default async (event: any, ctx: any, tags: any[]) => {
       true,
       filename,
     );
-    console.log(filenameWithPath);
     return [new CQImage(filenameWithPath)];
   } catch (err) {
     return '拉不到图…可能是网络问题或者日期不太对？';

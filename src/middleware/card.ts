@@ -56,7 +56,6 @@ export async function getStatusPic(name: string) {
 const Card = async (event: any, ctx: any, tags: any[]) => {
   const program = new Command().option('-f, --refresh', 'Force refresh');
   program.parse(['', ...split(ctx.raw_message)]);
-  // console.log(program.refresh);
   const name = program.args[0];
   let index: number | undefined;
   if (program.args.length >= 2) {

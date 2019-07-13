@@ -9,9 +9,4 @@ export function createScheduleJobs(bot: any) {
     '0 0 9 * * 4',
     maintenanceAnnounce.bind(null, bot, config.aigisGroups, '千年战争aigis'),
   );
-
-  schedule.scheduleJob(
-    '0 0 9 * * 4',
-    maintenanceAnnounce.bind(null, bot, config.gfGroups, '少女前线'),
-  );
 }
