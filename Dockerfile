@@ -1,6 +1,11 @@
 FROM node
 LABEL maintainer="moondropx"
 
+RUN locale-gen en_US.UTF-8  
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8
+
 # FROM https://hub.docker.com/r/wernight/phantomjs/dockerfile
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
