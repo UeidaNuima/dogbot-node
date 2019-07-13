@@ -1,19 +1,21 @@
 FROM node
 LABEL maintainer="moondropx"
 
-RUN locale-gen en_US.UTF-8  
-ENV LANG en_US.UTF-8  
-ENV LANGUAGE en_US:en  
-ENV LC_ALL en_US.UTF-8
 
 # FROM https://hub.docker.com/r/wernight/phantomjs/dockerfile
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   ca-certificates \
   bzip2 \
-  libfontconfig \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+  libfontconfig
+
+# set locales
+RUN apt-get install -y locales
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+  locale-gen
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8
 
 RUN set -x  \
   && apt-get update \
