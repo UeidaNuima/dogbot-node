@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dogbot-deployment #
+  namespace: magicdog # 同一namespace可以互相调用资源
+  labels:
+    k8s-app: dogbot # 在定义service时用到
+spec:
+  replicas: 1 # 定义需要多少个pod
+  selector:
+    matchLabels:
+      k8s-app: dogbot # 给k8s用的
+  template:
+    metadata:
+      labels:
+        k8s-app: dogbot # 跟上边保持一致
+    spec:
+      containers:
+        - name: dogbot #
+          image: moondropx/dogbot # 部署时用的docker镜像
+          env:
+            - name: CONFIG_ROOT
+              value: /root/config
+          ports:
+            - containerPort: 6700
+          volumeMounts:
+            - name: util-pv
+              mountPath: /root/coolq
+              subPath: coolq
+            - name: config
+              mountPath: /root/config
+
+      volumes:
+        - name: util-pv
+          persistentVolumeClaim:
+            claimName: util-pv-claim
+        - name: config
+          configMap:
+            name: dogbot-config
+            items:
+              - key: config.json
+                path: keys

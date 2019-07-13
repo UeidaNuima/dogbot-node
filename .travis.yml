@@ -1,0 +1,26 @@
+dist: trusty
+sudo: true
+
+services:
+  - docker
+
+language: node_js
+node_js:
+  - stable
+
+os:
+  - linux
+
+before_install:
+  - bash install_kubectl.sh
+
+install:
+  - yarn install --production
+
+script:
+  - yarn build
+  - docker build -t moondropx/dogbot .
+
+after_success:
+  - bash docker_push.sh
+  - bash kube_deploy.sh

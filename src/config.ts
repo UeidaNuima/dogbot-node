@@ -1,28 +1,16 @@
 import { readFileSync, existsSync } from 'fs-extra';
-import { ProvidedRequiredArgumentsOnDirectives } from 'graphql/validation/rules/ProvidedRequiredArguments';
+import * as path from 'path';
 
-let config: { [k: string]: any };
+const CONFIG_ROOT = process.env.CONFIG_ROOT || '.';
 
-if (existsSync('./config.json')) {
-  const configFromFile = JSON.parse(
-    readFileSync('./config.json', { encoding: 'utf-8' }),
-  );
-  config = configFromFile;
-} else {
-  config = {
-    twitter: {
-      consumer_key: process.env.TWITTER_CONSUMER_KEY,
-      consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-      token_secret: process.env.TWITTER_TOKEN_SECRET,
-      token: process.env.TWITTER_TOKEN,
-    },
-    aigisGroups: process.env.AIGIS_GROUPS
-      ? process.env.AIGIS_GROUPS!.split(':').map(s => Number.parseInt(s, 10))
-      : [],
-    CQRoot: process.env.CQROOT,
-    mongodbURL: process.env.MONGODB_URL,
-  };
+const configPath = path.join(CONFIG_ROOT, 'config.json');
+
+if (!existsSync(configPath)) {
+  console.error('No config file found!');
+  process.exit(1);
 }
+
+const config = JSON.parse(readFileSync(configPath, { encoding: 'utf-8' }));
 
 if (
   !(
@@ -34,8 +22,8 @@ if (
     config.mongodbURL
   )
 ) {
-  console.error('Missing env!');
-  process.exit();
+  console.error('Missing config field(s)!');
+  process.exit(1);
 }
 
 export default config;
