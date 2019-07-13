@@ -39,4 +39,4 @@ spec:
             name: dogbot-config
             items:
               - key: config.json
-                path: keys
+                path: config.json
