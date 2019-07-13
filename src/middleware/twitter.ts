@@ -21,8 +21,6 @@ export default async function twitter(event: any, ctx: any, tags: any) {
   let screenName: string;
   if (config.aigisGroups.includes(ctx.group_id)) {
     screenName = 'Aigis1000';
-  } else if (config.gfGroups.includes(ctx.group_id)) {
-    screenName = 'GirlsFrontline';
   } else {
     return;
   }

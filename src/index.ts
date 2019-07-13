@@ -17,7 +17,7 @@ import { createScheduleJobs } from './schedule';
 import bot from './bot';
 
 mongoose.connect(
-  `mongodb://localhost/${config.db}`,
+  config.mongodbURL,
   { useNewUrlParser: true },
 );
 import './model';
