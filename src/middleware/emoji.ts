@@ -24,7 +24,7 @@ export async function replacer(event: any, ctx: any, tags: any[]) {
   let isReplaced = false;
   async function replaceCallback(...args: any[]) {
     let name: string;
-    const origin: string = args[args.length - 1];
+    const origin: string = args[0];
     if (args.length === 3) {
       name = args[0];
     } else {
