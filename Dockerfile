@@ -17,6 +17,9 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en  
 ENV LC_ALL en_US.UTF-8
 
+RUN echo "Asia/Shanghai" > /etc/timezone && \
+  ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
 RUN set -x  \
   && apt-get update \
   && apt-get install -y fonts-wqy-microhei \
