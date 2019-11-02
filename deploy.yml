@@ -40,3 +40,5 @@ spec:
             items:
               - key: config.json
                 path: config.json
+      nodeSelector:
+        kubernetes.io/hostname: master
