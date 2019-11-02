@@ -206,13 +206,13 @@ export async function getCardsInfo(name: string) {
   let classID;
 
   // if first/second char is rarity
-  let rarity = RARITY.findIndex(c => c === name[0]);
+  let rarity = RARITY.findIndex(c => c === name.slice(0, 2));
   if (rarity !== -1) {
-    className = name.slice(1);
-  } else if (name.length > 2) {
-    rarity = RARITY.findIndex(c => c === name.slice(0, 2));
+    className = name.slice(2);
+  } else {
+    rarity = RARITY.findIndex(c => c === name.slice(0, 1));
     if (rarity !== -1) {
-      className = name.slice(2);
+      className = name.slice(1);
     }
   }
 
