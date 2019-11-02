@@ -8,7 +8,20 @@ import config from './config';
 
 const CQRoot: string = config.CQRoot;
 const CQImageRoot = join(CQRoot, 'data', 'image');
-export const RARITY = ['铜', '铁', '银', '金', '白', '黑', undefined, '蓝'];
+export const RARITY = [
+  '铜',
+  '铁',
+  '银',
+  '金',
+  '白',
+  '黑',
+  undefined,
+  '蓝',
+  undefined,
+  undefined,
+  '白英',
+  '黑英',
+];
 
 /**
  * Split a string by spaces except in double quotes.
@@ -192,11 +205,17 @@ export async function getCardsInfo(name: string) {
   let className = name;
   let classID;
 
-  // if first char is rarity
-  const rarity = RARITY.findIndex(c => c === name[0]);
+  // if first/second char is rarity
+  let rarity = RARITY.findIndex(c => c === name[0]);
   if (rarity !== -1) {
     className = name.slice(1);
+  } else if (name.length > 2) {
+    rarity = RARITY.findIndex(c => c === name.slice(0, 2));
+    if (rarity !== -1) {
+      className = name.slice(2);
+    }
   }
+
   // name is a class name
   const classResp1 = await getClass(className);
   if (classResp1 && classResp1.data.class) {
