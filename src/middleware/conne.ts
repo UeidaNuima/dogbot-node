@@ -74,7 +74,7 @@ const Conne = async (event: any, ctx: any, tags: any[]) => {
     CardID: number;
     SellPrice: number;
     Rare: number;
-    NickName: string[];
+    NickNames: string[];
     ConneName: string;
   }> = [];
   for (const name of program.args) {

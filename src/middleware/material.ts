@@ -23,7 +23,7 @@ const Material = async (event: any, ctx: any, tags: any[]) => {
       if (classInfo.MaxLevel === 50) {
         // if the change will be cc
         CCMaterials = CCMaterials.concat(
-          classInfo.JobChangeMaterial.map(mat => mat.Name),
+          classInfo.JobChangeMaterials.map(mat => mat.Name),
         );
         if (CCMaterials.length === 2) {
           // if length is 2, a same class siver unit will be used
@@ -32,15 +32,17 @@ const Material = async (event: any, ctx: any, tags: any[]) => {
         // get aw class info
         const awClassInfo = await getClassInfo(undefined, classInfo.JobChange);
         AWMaterials = AWMaterials.concat(
-          awClassInfo.JobChangeMaterial.map(mat => mat.Name),
+          awClassInfo.JobChangeMaterials.map(mat => mat.Name),
         );
-        orbs = orbs.concat(awClassInfo.Data_ExtraAwakeOrb.map(mat => mat.Name));
+        orbs = orbs.concat(
+          awClassInfo.Data_ExtraAwakeOrbs.map(mat => mat.Name),
+        );
       } else if (classInfo.MaxLevel === 80) {
         // if the change will be aw
         AWMaterials = AWMaterials.concat(
-          classInfo.JobChangeMaterial.map(mat => mat.Name),
+          classInfo.JobChangeMaterials.map(mat => mat.Name),
         );
-        orbs = orbs.concat(classInfo.Data_ExtraAwakeOrb.map(mat => mat.Name));
+        orbs = orbs.concat(classInfo.Data_ExtraAwakeOrbs.map(mat => mat.Name));
       }
       let rep = `职业[${classInfo.Name}]`;
       if (CCMaterials.length !== 0) {
@@ -55,9 +57,9 @@ const Material = async (event: any, ctx: any, tags: any[]) => {
       return rep;
     } else {
       const {
-        data: { classes },
+        data: { Classes },
       } = await getClassesByMaterial(classInfo.ClassID);
-      if (classes.length > 0) {
+      if (Classes.length > 0) {
         // const filteredClasses: typeof classes = [];
         // classes.forEach(c => {
         //   let flag = true;
@@ -71,9 +73,9 @@ const Material = async (event: any, ctx: any, tags: any[]) => {
         //   }
         // });
 
-        return `以职业[${classInfo.Name}]为素材的有：\n[${classes
-          .map(c => c.Name)
-          .join('][')}]`;
+        return `以职业[${classInfo.Name}]为素材的有：\n[${Classes.map(
+          c => c.Name,
+        ).join('][')}]`;
       }
       return `没有以职业[${classInfo.Name}]为素材的职业。`;
     }

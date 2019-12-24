@@ -42,77 +42,77 @@ const client = new ApolloClient({
 
 export default client;
 
-export async function getCard(CardID: number) {
+export async function getCard(CardID?: number, Name?: string) {
   return client.query<{
-    card: {
+    Card: {
       Name: string;
       CardID: number;
       SellPrice: number;
       Rare: number;
-      NickName: string[];
+      NickNames: string[];
       ConneName: string;
     };
   }>({
     query: gql`
-      query($CardID: Int!) {
-        card(CardID: $CardID) {
+      query($CardID: Int, $Name: String) {
+        card(CardID: $CardID, Name: $Name) {
           CardID
           Name
           SellPrice
           Rare
-          NickName
+          NickNames
           ConneName
         }
       }
     `,
     variables: {
       CardID,
+      Name,
     },
   });
 }
 
-export async function getCards(args: { name?: string; classID?: number }) {
+export async function getCards(ClassID?: number) {
   return client.query<{
-    cards: Array<{
+    Cards: Array<{
       Name: string;
       CardID: number;
       SellPrice: number;
       Rare: number;
-      NickName: string[];
+      NickNames: string[];
       ConneName: string;
     }>;
   }>({
     query: gql`
-      query($Name: String, $ClassID: Int) {
-        cards(Name: $Name, InitClassID: $ClassID) {
+      query($ClassID: Int) {
+        Cards(Name: $Name, ClassID: $ClassID) {
           CardID
           Name
           SellPrice
           Rare
-          NickName
+          NickNames
           ConneName
         }
       }
     `,
     variables: {
-      Name: args.name,
-      ClassID: args.classID,
+      ClassID,
     },
   });
 }
 
 export async function getClass(Name?: string, ClassID?: number) {
   return client.query<{
-    class: {
+    Class: {
       ClassID: number;
       Name: string;
       MaxLevel: number;
       JobChange: number;
-      JobChangeMaterial: Array<{
+      JobChangeMaterials: Array<{
         ClassID: number;
         Name: string;
       }>;
-      Data_ExtraAwakeOrb: Array<{
+      Data_ExtraAwakeOrbs: Array<{
         ClassID: number;
         Name: string;
       }>;
@@ -120,16 +120,16 @@ export async function getClass(Name?: string, ClassID?: number) {
   }>({
     query: gql`
       query($Name: String, $ClassID: Int) {
-        class(Name: $Name, ClassID: $ClassID) {
+        Class(Name: $Name, ClassID: $ClassID) {
           MaxLevel
           ClassID
           Name
           JobChange
-          JobChangeMaterial {
+          JobChangeMaterials {
             ClassID
             Name
           }
-          Data_ExtraAwakeOrb {
+          Data_ExtraAwakeOrbs {
             ClassID
             Name
           }
@@ -145,7 +145,7 @@ export async function getClass(Name?: string, ClassID?: number) {
 
 export async function getClassesByMaterial(MaterialID: number) {
   return client.query<{
-    classes: Array<{
+    Classes: Array<{
       ClassID: number;
       Name: string;
       JobChange: number;
@@ -153,7 +153,7 @@ export async function getClassesByMaterial(MaterialID: number) {
   }>({
     query: gql`
       query($MaterialID: Int!) {
-        classes(MaterialID: $MaterialID) {
+        Classes(MaterialID: $MaterialID) {
           ClassID
           Name
           JobChange

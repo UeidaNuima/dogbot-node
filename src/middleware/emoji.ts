@@ -1,11 +1,5 @@
 import { CQImage } from 'cq-websocket';
-import {
-  split,
-  getCQImage,
-  replaceAsync,
-  choose,
-  downloadImage,
-} from '../util';
+import { split, replaceAsync, choose, downloadImage } from '../util';
 import { Emoji } from '../model';
 
 function imgConverter(imgStr: string) {

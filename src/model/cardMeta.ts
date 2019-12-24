@@ -5,7 +5,7 @@ export default class CardMeta extends Typegoose {
   public CardID: number;
 
   @arrayProp({ items: String })
-  public NickName?: string[];
+  public NickNames?: string[];
 
   @prop()
   public ConneName?: string;

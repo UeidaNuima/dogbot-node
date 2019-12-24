@@ -5,8 +5,5 @@ export default class ClassMeta extends Typegoose {
   public ClassID: number;
 
   @arrayProp({ items: String })
-  public NickName?: string[];
-
-  @prop()
-  public CnName?: string;
+  public NickNames?: string[];
 }

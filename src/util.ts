@@ -166,20 +166,20 @@ export function choose(arr: any[]) {
 export async function getClassInfo(name?: string, id?: number) {
   if (id) {
     const classInfo1 = await getClass(undefined, id);
-    if (classInfo1 && classInfo1.data.class) {
-      return classInfo1.data.class;
+    if (classInfo1 && classInfo1.data.Class) {
+      return classInfo1.data.Class;
     }
     throw new Error(`没有找到id为${id}的职业`);
   }
   const classInfo = await getClass(name);
-  if (classInfo && classInfo.data.class) {
-    return classInfo.data.class;
+  if (classInfo && classInfo.data.Class) {
+    return classInfo.data.Class;
   }
   const classResp = await ClassMeta.findOne({ NickName: name });
   if (classResp) {
     const classInfo2 = await getClass(undefined, classResp.ClassID);
-    if (classInfo2 && classInfo2.data.class) {
-      return classInfo2.data.class;
+    if (classInfo2 && classInfo2.data.Class) {
+      return classInfo2.data.Class;
     }
   }
   throw new Error('没有找到对应职业');
@@ -187,9 +187,9 @@ export async function getClassInfo(name?: string, id?: number) {
 
 export async function getCardsInfo(name: string) {
   // is name a card name
-  const cardsResp1 = await getCards({ name });
-  if (cardsResp1 && cardsResp1.data.cards.length !== 0) {
-    return cardsResp1.data.cards;
+  const cardsResp1 = await getCard(undefined, name);
+  if (cardsResp1.data.Card) {
+    return [cardsResp1.data.Card];
   }
 
   // is name a card nickName
@@ -197,7 +197,7 @@ export async function getCardsInfo(name: string) {
   if (cardResp2) {
     const card = await getCard(cardResp2.CardID);
     if (card) {
-      return [card.data.card];
+      return [card.data.Card];
     }
   }
 
@@ -218,8 +218,8 @@ export async function getCardsInfo(name: string) {
 
   // name is a class name
   const classResp1 = await getClass(className);
-  if (classResp1 && classResp1.data.class) {
-    classID = classResp1.data.class.ClassID;
+  if (classResp1 && classResp1.data.Class) {
+    classID = classResp1.data.Class.ClassID;
   } else {
     // name is a class nickname
     const classResp2 = await ClassMeta.findOne({ NickName: className });
@@ -233,9 +233,9 @@ export async function getCardsInfo(name: string) {
   }
 
   // use classId to find card name
-  const cardsResp = await getCards({ classID });
+  const cardsResp = await getCards(classID);
   if (cardsResp) {
-    const cards = cardsResp.data.cards.filter(card =>
+    const cards = cardsResp.data.Cards.filter(card =>
       rarity === -1 ? true : card.Rare === rarity,
     );
     if (cards.length === 0) {

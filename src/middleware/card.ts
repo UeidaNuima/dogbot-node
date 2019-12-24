@@ -84,8 +84,8 @@ const Card = async (event: any, ctx: any, tags: any[]) => {
             .map(
               card =>
                 `[${RARITY[card.Rare]}]${card.Name}` +
-                (card.NickName && card.NickName.length !== 0
-                  ? `(${card.NickName.join(',')})`
+                (card.NickNames && card.NickNames.length !== 0
+                  ? `(${card.NickNames.join(',')})`
                   : ''),
             )
             .join('\n')

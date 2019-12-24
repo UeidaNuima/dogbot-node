@@ -31,7 +31,7 @@ export const Emoji = new EmojiSchema().getModelForClass(EmojiSchema, {
 
 export const CardMeta = new CardMetaSchema().getModelForClass(CardMetaSchema, {
   schemaOptions: {
-    collection: 'cardMeta',
+    collection: 'card_meta',
   },
 });
 
@@ -39,7 +39,7 @@ export const ClassMeta = new ClassMetaSchema().getModelForClass(
   ClassMetaSchema,
   {
     schemaOptions: {
-      collection: 'classMeta',
+      collection: 'class_meta',
     },
   },
 );
