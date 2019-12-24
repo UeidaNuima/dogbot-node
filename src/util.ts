@@ -175,7 +175,7 @@ export async function getClassInfo(name?: string, id?: number) {
   if (classInfo && classInfo.data.Class) {
     return classInfo.data.Class;
   }
-  const classResp = await ClassMeta.findOne({ NickName: name });
+  const classResp = await ClassMeta.findOne({ NickNames: name });
   if (classResp) {
     const classInfo2 = await getClass(undefined, classResp.ClassID);
     if (classInfo2 && classInfo2.data.Class) {
@@ -193,7 +193,7 @@ export async function getCardsInfo(name: string) {
   }
 
   // is name a card nickName
-  const cardResp2 = await CardMeta.findOne({ NickName: name });
+  const cardResp2 = await CardMeta.findOne({ NickNames: name });
   if (cardResp2) {
     const card = await getCard(cardResp2.CardID);
     if (card) {
@@ -222,7 +222,7 @@ export async function getCardsInfo(name: string) {
     classID = classResp1.data.Class.ClassID;
   } else {
     // name is a class nickname
-    const classResp2 = await ClassMeta.findOne({ NickName: className });
+    const classResp2 = await ClassMeta.findOne({ NickNames: className });
     if (classResp2) {
       classID = classResp2.ClassID;
     }
