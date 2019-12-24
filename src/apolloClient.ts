@@ -55,7 +55,7 @@ export async function getCard(CardID?: number, Name?: string) {
   }>({
     query: gql`
       query($CardID: Int, $Name: String) {
-        card(CardID: $CardID, Name: $Name) {
+        Card(CardID: $CardID, Name: $Name) {
           CardID
           Name
           SellPrice
