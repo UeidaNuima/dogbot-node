@@ -85,7 +85,7 @@ export async function getCards(ClassID?: number) {
   }>({
     query: gql`
       query($ClassID: Int) {
-        Cards(Name: $Name, ClassID: $ClassID) {
+        Cards(ClassID: $ClassID) {
           CardID
           Name
           SellPrice
