@@ -39,7 +39,10 @@ export async function getConnePic(names: string[], sorter?: string) {
       ).remove();
       $($('.container')[1]).remove();
       names.forEach(function(name) {
-        $('tr:contains(' + name + ')').css('display', 'table-row');
+        $('a:contains(' + name + ')')
+          .parent()
+          .parent()
+          .show();
       });
       // $('#sorter-mediaTableCol-1').click();
       if (sorterIndex) {
