@@ -59,6 +59,6 @@ bot
   .on('message', register('help', Help))
 
   .on('message', register('emoji', Emoji))
-  .on('message', register('group', EmojiReplacer));
+  .on('message.group', EmojiReplacer);
 
 bot.connect();
