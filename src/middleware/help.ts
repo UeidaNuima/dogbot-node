@@ -1,7 +1,7 @@
 import { MessageEventListener } from 'cq-websocket';
 
 const Help: MessageEventListener = () => {
-  const helper = `ケルベロス ver4.1.0
+  const helper = `ケルベロス ver4.2.0
   /twitter [几天以前]
   /exp 稀有度 初始等级 目标等级
   /exp 稀有度 x桶|x祝福[+x桶|+x祝福] 目标等级
@@ -16,6 +16,7 @@ const Help: MessageEventListener = () => {
   /status [-f] 单位
   /conne [-s sorter] 单位|职业 [单位|职业 [...]]
   /material [-r] 职业
+  /roll [数字|选项1,选项2[,选项3...]]
   /help
 ----
 桶 => /exp

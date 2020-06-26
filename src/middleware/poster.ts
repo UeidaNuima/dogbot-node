@@ -19,11 +19,7 @@ function yyyymmdd(date: Date) {
   ].join('');
 }
 
-const Poster: MessageEventListener = async (
-  event: any,
-  ctx: any,
-  tags: any[],
-) => {
+const Poster: MessageEventListener = async (event, ctx, tags) => {
   const dayStr = ctx.raw_message.replace(/海报/, '').replace(/\/poster/, '');
   if (dayStr) {
     const day = Number.parseInt(dayStr, 10);
