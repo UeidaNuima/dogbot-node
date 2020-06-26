@@ -25,7 +25,7 @@ export const EmojiReplacer: MessageEventListener = async (event, ctx, tags) => {
       name = args[1];
     }
     let emoji;
-    emoji = await Emoji.findOne({ name, group: ctx.group_id });
+    emoji = await Emoji.findOne({ name, group: ctx.group_id.toString() });
 
     if (emoji) {
       isReplaced = true;
@@ -55,11 +55,7 @@ export const EmojiReplacer: MessageEventListener = async (event, ctx, tags) => {
   }
 };
 
-const EmojiMiddleware: MessageEventListener = async (
-  event: any,
-  ctx: any,
-  tags: any[],
-) => {
+const EmojiMiddleware: MessageEventListener = async (event, ctx, tags) => {
   const [_, mainCommand, ...argv] = split(ctx.raw_message);
   if (mainCommand === 'add') {
     // add emoji
@@ -72,15 +68,15 @@ const EmojiMiddleware: MessageEventListener = async (
     if (!targetEmoji) {
       targetEmoji = new Emoji({ name: [name] });
       if (ctx.message.type === 'RecvGroupMessage') {
-        targetEmoji.group.push(ctx.group_id);
+        targetEmoji.group.push(ctx.group_id.toString());
       }
     } else {
       // from group && group id not in record
       if (
         ctx.message.type === 'RecvGroupMessage' &&
-        targetEmoji.group.indexOf(ctx.group_id) === -1
+        targetEmoji.group.indexOf(ctx.group_id.toString()) === -1
       ) {
-        return `这个表情组不在这个群空间下，请尝试/emoji addgroup ${ctx.group_id}`;
+        return `这个表情组不在这个群空间下`;
       }
     }
 
