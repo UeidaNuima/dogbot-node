@@ -1,4 +1,4 @@
-import { CQImage } from 'cq-websocket';
+import { CQImage, MessageEventListener } from 'cq-websocket';
 import { downloadImage } from '../util';
 
 let updateDay = 4;
@@ -19,7 +19,11 @@ function yyyymmdd(date: Date) {
   ].join('');
 }
 
-export default async (event: any, ctx: any, tags: any[]) => {
+const Poster: MessageEventListener = async (
+  event: any,
+  ctx: any,
+  tags: any[],
+) => {
   const dayStr = ctx.raw_message.replace(/海报/, '').replace(/\/poster/, '');
   if (dayStr) {
     const day = Number.parseInt(dayStr, 10);
@@ -53,3 +57,5 @@ export default async (event: any, ctx: any, tags: any[]) => {
     return '拉不到图…可能是网络问题或者日期不太对？';
   }
 };
+
+export default Poster;

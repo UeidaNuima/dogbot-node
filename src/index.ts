@@ -3,10 +3,7 @@ import config from './config';
 import Exp from './middleware/exp';
 import Twitter from './middleware/twitter';
 import Calc from './middleware/calc';
-import {
-  default as Emoji,
-  replacer as EmojiReplacer,
-} from './middleware/emoji';
+import { default as Emoji, EmojiReplacer } from './middleware/emoji';
 import Help from './middleware/help';
 import Poster from './middleware/poster';
 import Card from './middleware/card';
@@ -16,11 +13,9 @@ import { createScheduleJobs } from './schedule';
 
 import bot from './bot';
 
-mongoose.connect(
-  config.mongodbURL,
-  { useNewUrlParser: true },
-);
+mongoose.connect(config.mongodbURL, { useNewUrlParser: true });
 import './model';
+import { register } from './util';
 
 createScheduleJobs(bot);
 
@@ -41,76 +36,29 @@ bot
       bot('send_msg', { ...ctx, message: '汪！' });
     }
   })
-  .on('message', async (event, ctx, tags) => {
-    // calc
-    if (ctx.raw_message.startsWith('/calc')) {
-      return Calc(event, ctx, tags);
-    }
+  .on('message', register('calc', Calc))
 
-    // poster
-    if (
-      ctx.raw_message.startsWith('/poster') ||
-      ctx.raw_message.startsWith('海报')
-    ) {
-      return await Poster(event, ctx, tags);
-    }
+  .on('message', register('poster', Poster))
+  .on('message', register('海报', Poster, false))
 
-    // exp
-    if (
-      ctx.raw_message.startsWith('/bucket') ||
-      ctx.raw_message.startsWith('桶')
-    ) {
-      return await Exp(event, ctx, tags);
-    }
+  .on('message', register('bucket', Exp))
+  .on('message', register('桶', Exp, false))
 
-    // conne
-    if (
-      ctx.raw_message.startsWith('/conne') ||
-      ctx.raw_message.startsWith('圆爹')
-    ) {
-      return await Conne(event, ctx, tags);
-    }
+  .on('message', register('conne', Conne))
+  .on('message', register('圆爹', Conne, false))
 
-    // status
-    if (
-      ctx.raw_message.startsWith('/status') ||
-      ctx.raw_message.startsWith('属性图')
-    ) {
-      return await Card(event, ctx, tags);
-    }
+  .on('message', register('status', Card))
+  .on('message', register('属性图', Card, false))
 
-    // material
-    if (
-      ctx.raw_message.startsWith('/material') ||
-      ctx.raw_message.startsWith('素材')
-    ) {
-      return await Material(event, ctx, tags);
-    }
+  .on('message', register('material', Material))
+  .on('message', register('素材', Material, false))
 
-    // twitter
-    if (
-      ctx.raw_message.startsWith('/twitter') ||
-      ctx.raw_message.startsWith('推特')
-    ) {
-      return await Twitter(event, ctx, tags);
-    }
+  .on('message', register('twitter', Twitter))
+  .on('message', register('推特', Twitter, false))
 
-    // twitter
-    if (ctx.raw_message.startsWith('/emoji')) {
-      return await Emoji(event, ctx, tags);
-    }
+  .on('message', register('help', Help))
 
-    // help
-    if (ctx.raw_message === '/help') {
-      return await Help();
-    }
-
-    // replace emoji
-    if (ctx.message_type === 'group') {
-      return EmojiReplacer(event, ctx, tags);
-    }
-
-    return;
-  });
+  .on('message', register('emoji', Emoji))
+  .on('message', register('group', EmojiReplacer));
 
 bot.connect();

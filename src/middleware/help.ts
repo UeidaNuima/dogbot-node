@@ -1,4 +1,6 @@
-export default async () => {
+import { MessageEventListener } from 'cq-websocket';
+
+const Help: MessageEventListener = () => {
   const helper = `ケルベロス ver4.1.0
   /twitter [几天以前]
   /exp 稀有度 初始等级 目标等级
@@ -24,3 +26,5 @@ export default async () => {
 素材 => /material`;
   return helper;
 };
+
+export default Help;

@@ -1,6 +1,6 @@
 import * as phantom from 'phantom';
 import * as cheerio from 'cheerio';
-import { CQImage } from 'cq-websocket';
+import { CQImage, MessageEventListener } from 'cq-websocket';
 import {
   split,
   saveImageFromBuffer,
@@ -53,7 +53,7 @@ export async function getStatusPic(name: string) {
   return Buffer.from(buffer, 'base64');
 }
 
-const Card = async (event: any, ctx: any, tags: any[]) => {
+const Card: MessageEventListener = async (event, ctx, tags) => {
   const program = new Command().option('-f, --refresh', 'Force refresh');
   program.parse(['', ...split(ctx.raw_message)]);
   const name = program.args[0];

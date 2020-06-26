@@ -1,5 +1,6 @@
 import { Exp } from '../model';
 import { split } from '../util';
+import { MessageEventListener } from 'cq-websocket';
 
 const RARITY = '铜铁银金白黑蓝';
 // ikusei fairy fix
@@ -119,7 +120,7 @@ export async function countBucket(
   };
 }
 
-export default async (event: any, ctx: any, tags: any[]) => {
+const ExpMiddleware: MessageEventListener = async (event, ctx, tags) => {
   // const message = ctx.message as RecvReplyableMessage;
   let rarity: number;
   let startLv: number | undefined;
@@ -214,3 +215,5 @@ export default async (event: any, ctx: any, tags: any[]) => {
     ])).join('\n');
   }
 };
+
+export default ExpMiddleware;

@@ -1,6 +1,7 @@
 import { split } from '../util';
 import { Twitter } from '../model';
 import config from '../config';
+import { MessageEventListener } from 'cq-websocket';
 
 /**
  * Return a biased Date by given days
@@ -12,7 +13,7 @@ function deltaDays(days: number) {
   return date;
 }
 
-export default async function twitter(event: any, ctx: any, tags: any) {
+const TwitterMiddleware: MessageEventListener = async (event, ctx, tags) => {
   const [_, param] = split(ctx.raw_message);
   const daysBefore = param ? Number.parseInt(param, 10) : 0;
   if (Number.isNaN(daysBefore) || daysBefore < 0) {
@@ -46,4 +47,6 @@ export default async function twitter(event: any, ctx: any, tags: any) {
   } else {
     return '莫得推特';
   }
-}
+};
+
+export default TwitterMiddleware;

@@ -1,4 +1,4 @@
-import { CQImage } from 'cq-websocket';
+import { CQImage, MessageEventListener } from 'cq-websocket';
 import * as phantom from 'phantom';
 import { split, getCardsInfo, saveImageFromBuffer } from '../util';
 import bot from '../bot';
@@ -62,7 +62,7 @@ export async function getConnePic(names: string[], sorter?: string) {
   return Buffer.from(buffer, 'base64');
 }
 
-const Conne = async (event: any, ctx: any, tags: any[]) => {
+const Conne: MessageEventListener = async (event, ctx, tags) => {
   const program = new Command().option('-s, --sort <sorter>');
   program.parse(['', ...split(ctx.raw_message)]);
   const sorter: string | undefined = program.sort;

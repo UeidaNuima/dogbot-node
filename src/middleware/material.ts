@@ -4,10 +4,11 @@ process.exit = (() => {
   return;
 }) as () => never;
 import { Command } from 'commander';
+import { MessageEventListener } from 'cq-websocket';
 
 const program = new Command().option('-r, --reverse', 'Reverse search');
 
-const Material = async (event: any, ctx: any, tags: any[]) => {
+const Material: MessageEventListener = async (event, ctx, tags) => {
   program.parse(['', ...split(ctx.raw_message)]);
   const name = program.args[0];
   try {

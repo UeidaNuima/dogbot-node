@@ -5,6 +5,7 @@ import { join, dirname } from 'path';
 import { getCard, getCards, getClass } from './apolloClient';
 import { CardMeta, ClassMeta } from './model';
 import config from './config';
+import { MessageEventListener } from 'cq-websocket';
 
 const CQRoot: string = config.CQRoot;
 const CQImageRoot = join(CQRoot, 'data', 'image');
@@ -249,4 +250,22 @@ export async function getCardsInfo(name: string) {
   }
 
   throw new Error(`没找到单位${name}`);
+}
+
+const commandPrefix = '/';
+
+// Register Function
+export function register(
+  command: string,
+  func: MessageEventListener,
+  withPrefix = true,
+) {
+  const retFunc: MessageEventListener = (event, ctx, tags) => {
+    if (
+      ctx.raw_message.startsWith(withPrefix ? commandPrefix + command : command)
+    ) {
+      return func(event, ctx, tags);
+    }
+  };
+  return retFunc;
 }

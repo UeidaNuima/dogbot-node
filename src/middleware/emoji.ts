@@ -1,4 +1,4 @@
-import { CQImage } from 'cq-websocket';
+import { CQImage, MessageEventListener } from 'cq-websocket';
 import { split, replaceAsync, choose, downloadImage } from '../util';
 import { Emoji } from '../model';
 
@@ -14,7 +14,7 @@ function imgConverter(imgStr: string) {
 /**
  * Replace (name) or a single name to cqimg and reply
  */
-export async function replacer(event: any, ctx: any, tags: any[]) {
+export const EmojiReplacer: MessageEventListener = async (event, ctx, tags) => {
   let isReplaced = false;
   async function replaceCallback(...args: any[]) {
     let name: string;
@@ -53,9 +53,13 @@ export async function replacer(event: any, ctx: any, tags: any[]) {
   } else {
     return;
   }
-}
+};
 
-export default async (event: any, ctx: any, tags: any[]) => {
+const EmojiMiddleware: MessageEventListener = async (
+  event: any,
+  ctx: any,
+  tags: any[],
+) => {
   const [_, mainCommand, ...argv] = split(ctx.raw_message);
   if (mainCommand === 'add') {
     // add emoji
@@ -76,9 +80,7 @@ export default async (event: any, ctx: any, tags: any[]) => {
         ctx.message.type === 'RecvGroupMessage' &&
         targetEmoji.group.indexOf(ctx.group_id) === -1
       ) {
-        return `这个表情组不在这个群空间下，请尝试/emoji addgroup ${
-          ctx.group_id
-        }`;
+        return `这个表情组不在这个群空间下，请尝试/emoji addgroup ${ctx.group_id}`;
       }
     }
 
@@ -246,3 +248,5 @@ export default async (event: any, ctx: any, tags: any[]) => {
   }
   return '兄啊没有这个指令';
 };
+
+export default EmojiMiddleware;
