@@ -4,8 +4,8 @@ import config from '../config';
 import { MessageEventListener } from 'cq-websocket';
 
 /**
- * Return a biased Date by given days
- * @param days days to be biased
+ * Return a shifted Date by given days
+ * @param days days to be shifted
  */
 function deltaDays(days: number) {
   const date = new Date();

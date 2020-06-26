@@ -264,7 +264,12 @@ export function register(
     if (
       ctx.raw_message.startsWith(withPrefix ? commandPrefix + command : command)
     ) {
-      return func(event, ctx, tags);
+      if (!withPrefix) {
+        const su = ctx.raw_message.slice(command.length);
+        if (su.length === 0 && su.startsWith(' ')) {
+          return func(event, ctx, tags);
+        }
+      } else return func(event, ctx, tags);
     }
   };
   return retFunc;
