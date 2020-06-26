@@ -7,7 +7,7 @@ clusters:
 contexts:
 - context:
     cluster: kubernetes
-    user: yukimir-admin
+    user: kubernetes-admin
   name: kubernetes-admin@kubernetes
 current-context: kubernetes-admin@kubernetes
 kind: Config
