@@ -270,7 +270,7 @@ export function register(
     ) {
       if (!withPrefix) {
         const su = ctx.raw_message.slice(command.length);
-        if (su.length === 0 && su.startsWith(' ')) {
+        if (su.length === 0 || su.startsWith(' ')) {
           return func(event, ctx, tags);
         }
       } else return func(event, ctx, tags);
