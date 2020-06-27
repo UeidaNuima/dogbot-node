@@ -31,10 +31,9 @@ bot
   });
 
 bot
-  .on('message', async (event, ctx, tags) => {
-    console.log(ctx.raw_message);
-    if (ctx.raw_message === '汪') {
-      await bot('send_msg', { ...ctx, message: '汪！' });
+  .on('message', (event, ctx, tags) => {
+    if (ctx.raw_message.includes('汪')) {
+      bot('send_msg', { ...ctx, message: '汪！' });
     }
   })
   .on('message', register('calc', Calc))

@@ -50,9 +50,8 @@ export const EmojiReplacer: MessageEventListener = async (event, ctx, tags) => {
   // response if replaced otherwise just go through
   if (isReplaced) {
     return replaced;
-  } else {
-    return;
   }
+  return;
 };
 
 const EmojiMiddleware: MessageEventListener = async (event, ctx, tags) => {
