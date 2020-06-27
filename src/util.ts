@@ -164,8 +164,10 @@ export function choose(arr: any[]) {
   return arr[index];
 }
 
-export function getRandomArbitrary(min: number, max: number) {
-  return Math.random() * (max - min) + min;
+export function getRandomInt(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 export async function getClassInfo(name?: string, id?: number) {
