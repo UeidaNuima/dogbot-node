@@ -9,13 +9,13 @@ import Poster from './middleware/poster';
 import Card from './middleware/card';
 import Conne from './middleware/conne';
 import Material from './middleware/material';
+import Roll from './middleware/roll';
 import { createScheduleJobs } from './schedule';
-
+import { register } from './util';
 import bot from './bot';
 
 mongoose.connect(config.mongodbURL, { useNewUrlParser: true });
 import './model';
-import { register } from './util';
 
 createScheduleJobs(bot);
 
@@ -31,7 +31,7 @@ bot
   });
 
 bot
-  .on('message', async (event, ctx, tags) => {
+  .on('message', (event, ctx, tags) => {
     if (ctx.raw_message === '汪') {
       bot('send_msg', { ...ctx, message: '汪！' });
     }
@@ -59,6 +59,9 @@ bot
   .on('message', register('help', Help))
 
   .on('message', register('emoji', Emoji))
+
+  .on('message', register('roll', Roll))
+
   .on('message.group', EmojiReplacer);
 
 bot.connect();
