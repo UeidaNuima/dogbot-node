@@ -32,9 +32,9 @@ bot
 
 bot
   .on('message', async (event, ctx, tags) => {
+    console.log('echo');
     if (ctx.raw_message === '汪') {
       await bot('send_msg', { ...ctx, message: '汪！' });
-      console.log('echo');
     }
   })
   .on('message', register('calc', Calc))
