@@ -32,7 +32,7 @@ bot
 
 bot
   .on('message', async (event, ctx, tags) => {
-    console.log('echo');
+    console.log(ctx.raw_message);
     if (ctx.raw_message === '汪') {
       await bot('send_msg', { ...ctx, message: '汪！' });
     }
